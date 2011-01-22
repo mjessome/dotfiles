@@ -6,24 +6,25 @@ URxvt.shading:	40
 URxvt.font:	xft:Terminus:pixelsize=12:antialias=false
 URxvt.foreground:	#FFFFFF
 URxvt.scrollBar:	False
-urxvt*color5:	#ea96eb
-urxvt*color7:	#f2f2f2
-urxvt*color8:	#747474
-urxvt*color6:	#c9caec
-urxvt*color0:	#6c6c6c
-urxvt*color3:	#ecebbe
-urxvt*color1:	#e9897c
-urxvt*color2:	#b6e77d
-urxvt*color4:	#a9cdeb
-urxvt*color11:	#fcfbcc
-urxvt*color9:	#f99286
-urxvt*color10:	#c3f786
-urxvt*color12:	#b6defb
-urxvt*color15:	#e2e2e2
-urxvt*color13:	#fba1fb
-urxvt*color14:	#d7d9fc
-Xcursor.theme:	Neutral
-xrenoise.use_xcursors:	1
-xrenoise.display:	:0.0
-xrenoise.display_resource:	0x00,0x06,0x41,0x7F,0xB4,0x86,0x16,0x4E
-xrenoise.executable_path:	/tmp/Renoise_2_6_0_Demo_x86_64/renoise
+
+URxvt.fading:   20
+
+!Theme Sixteen
+!From http://phraktured.net/terminal-colors/
+URxvt.color0:     rgb:00/00/00
+URxvt.color1:     rgb:9e/18/28
+URxvt.color2:     rgb:ae/ce/92
+URxvt.color3:     rgb:96/8a/38
+URxvt.color4:     rgb:41/41/71
+URxvt.color5:     rgb:96/3c/59
+URxvt.color6:     rgb:41/81/79
+URxvt.color7:     rgb:be/be/be
+URxvt.color8:     rgb:66/66/66
+URxvt.color9:     rgb:cf/61/71
+URxvt.color10:    rgb:c5/f7/79
+URxvt.color11:    rgb:ff/f7/96
+URxvt.color12:    rgb:41/86/be
+URxvt.color13:    rgb:cf/9e/be
+URxvt.color14:    rgb:71/be/be
+URxvt.color15:    rgb:ff/ff/ff
+
