@@ -6,92 +6,115 @@
 " multi-bytes characters support, for example CJK support:
 "set fileencodings=ucs-bom,utf-8,cp936,big5,euc-jp,euc-kr,gb18030,latin1
 
-set tabstop=8       " Number of spaces that a <Tab> in the file counts for.
- 
-set shiftwidth=8    " Number of spaces to use for each step of (auto)indent.
- 
-set expandtab       " Use the appropriate number of spaces to insert a <Tab>.
-                    " Spaces are used in indents with the '>' and '<' commands
-                    " and when 'autoindent' is on. To insert a real tab when
-                    " 'expandtab' is on, use CTRL-V <Tab>.
- 
-set smarttab        " When on, a <Tab> in front of a line inserts blanks
-                    " according to 'shiftwidth'. 'tabstop' is used in other
-                    " places. A <BS> will delete a 'shiftwidth' worth of space
-                    " at the start of the line.
- 
-set showcmd         " Show (partial) command in status line.
- 
-set showmatch       " When a bracket is inserted, briefly jump to the matching
-                    " one. The jump is only done if the match can be seen on the
-                    " screen. The time to show the match can be set with
-                    " 'matchtime'.
-                    "
-set matchtime=1     " How many 10ths of a second to show match for
- 
-set hlsearch        " When there is a previous search pattern, highlight all
-                    " its matches.
- 
-set incsearch       " While typing a search command, show immediately where the
-                    " so far typed pattern matches.
- 
-set ignorecase      " Ignore case in search patterns.
- 
-set smartcase       " Override the 'ignorecase' option if the search pattern
-                    " contains upper case characters.
- 
-set backspace=indent,eol,start " Influences the working of <BS>, <Del>, CTRL-W
-                    " and CTRL-U in Insert mode. This is a list of items,
-                    " separated by commas. Each item allows a way to backspace
-                    " over something.
- 
-set autoindent      " Copy indent from current line when starting a new line
-                    " (typing <CR> in Insert mode or when using the "o" or "O"
-                    " command).
- 
-set smartindent     " Do smart autoindenting when starting a new line. Works
-                    " for C-like programs, but can also be used for other
-                    " languages.
- 
-"set textwidth=79    " Maximum width of text that is being inserted. A longer
-                    " line will be broken after white space to get this width.
- 
-set formatoptions=c,q,r,t " This is a sequence of letters which describes how
-                    " automatic formatting is to be done.
-                    "
-                    " letter    meaning when present in 'formatoptions'
-                    " ------    ---------------------------------------
-                    " c         Auto-wrap comments using textwidth, inserting
-                    "           the current comment leader automatically.
-                    " q         Allow formatting of comments with "gq".
-                    " r         Automatically insert the current comment leader
-                    "           after hitting <Enter> in Insert mode. 
-                    " t         Auto-wrap text using textwidth (does not apply
-                    "           to comments)
- 
-set ruler           " Show the line and column number of the cursor position,
-                    " separated by a comma.
- 
-set background=dark " When set to "dark", Vim will try to use colors that look
-                    " good on a dark background. When set to "light", Vim will
-                    " try to use colors that look good on a light background.
-                    " Any other value is illegal.
- 
-" ----------------------------------------------------------------------------
-"  mouse settings
-set mouse=a         " Enable the use of the mouse.
-set mousehide       " Hide the mouse while typing
-
-" Make the mouse paste unformatted block of code
-map <MouseMiddle> <esc>"*p  
-
-"map Y y$
-
-filetype plugin on
-filetype indent on
-syntax on
+" Use Vim settings rather than Vi settings
+set nocompatible
 
 autocmd! bufwritepost vimrc source ~/.vimrc
+cmap w!! %!sudo tee > /dev/null %       " Write file as superuser
+filetype plugin on
+filetype indent on
 
-cmap w!! %!sudo tee > /dev/null %
+" ----------------------------------------------------------------------------
+" User Interface
+" ----------------------------------------------------------------------------
+set showcmd             " Show (partial) command in status line
+set ruler               " Show line & column number
+set nolazyredraw
+set whichwrap+=<,>,h,l  " arrow keys wrap around line
+set wildmenu            " For easier tab completion on command line
+colorscheme icansee
+set background=dark
+syntax on               " Turn on syntax highlighting
+
+" Highlight portions of lines past the 80th column
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
+
+set showmatch           " briefly jump to matching bracket upon bracket insert
+set matchtime=1         " How many 10ths of a second to show the match for
+
+" ----------------------------------------------------------------------------
+" Search
+" ----------------------------------------------------------------------------
+set hlsearch            " Highligh search matches
+set incsearch           " Show search matches as you type
+set ignorecase          " Ignore case in search patterns
+set smartcase           " Override ignorecase if pattern contains capitals
+
+" ----------------------------------------------------------------------------
+" Formatting
+" ----------------------------------------------------------------------------
+set tabstop=8
+set shiftwidth=8
+set expandtab           " Use spaces instead of tabs
+set smarttab 
+set autoindent          " Copy indent from current line when starting new line
+set smartindent         " Smart indent on new line, works for C-like langs.
+set textwidth=80        " Set comment text width to 80 chars:
+set formatoptions=c,q,r         " c: Auto-wrap comments to textwidth
+                                " q: Allow formatting comments with "gq".
+                                " r: Automatically insert current comment char
+                             
+" ----------------------------------------------------------------------------
+"  Mouse & Keyboard
+" ----------------------------------------------------------------------------
+set mouse=a         " Enable the use of the mouse.
+set mousehide       " Hide the mouse while typing
+map <MouseMiddle> <esc>*p       " The mouse to paste unformatted block of code
+set backspace=indent,eol,start  " Influences the working of backspaces
+
+" ----------------------------------------------------------------------------
+" Tabs
+" ----------------------------------------------------------------------------
+cmap tn tabnew
+nmap <tab> :tabnext<CR>
+
+" ----------------------------------------------------------------------------
+" Conque Plugin
+" ----------------------------------------------------------------------------
+let g:ConqueTerm_CloseOnEnd=1       " Close the tab upon program completion
+"let g:ConqueTerm_EscKey='<C-w>'     " Exit insert on <C-w>, so 3x<C-w> to
+                                    " go back to main window.
+"let g:ConqueTerm_CWInsert=1        " Allow <C-w> to leave buffer while in
+                                    " insert mode.
+let g:ConqueTerm_PyVersion=3
+let g:ConqueTerm_SendVisKey='<F9>'  " Send selection to conque buffer on F9
+let g:ConqueTerm_ReadUnfocused=1
+let g:ConqueTerm_InsertOnEnter=1
+
+" ----------------------------------------------------------------------------
+" PyClewn Plugin
+" ----------------------------------------------------------------------------
+cmap gdb Pyclewn
+
+" ----------------------------------------------------------------------------
+" Python FileType
+" ----------------------------------------------------------------------------
+" Change to witdh of 79
+au FileType python match OverLength /\%80v.\+/
+au FileType python setlocal textwidth=79
+
+au FileType python setlocal number
+
+" Open up a small conque window with the python interpreter at the bottom.
+"au FileType python let g:ConqueTerm_InsertOnEnter=0
+au FileType python :ConqueTermSplit python
+au FileType python :set im&     " Exit insert mode
+au FileType python :res 10
+
+" ----------------------------------------------------------------------------
+" C/CPP FileTypes
+" ----------------------------------------------------------------------------
+au FileType c,cpp,cc,C setlocal number
+
+" ----------------------------------------------------------------------------
+" HTM/HTML/PHP FileTypes
+" ----------------------------------------------------------------------------
+au FileType html,htm,php setlocal tabstop=2
+au FileType html,htm,php setlocal shiftwidth=2
+
+" ----------------------------------------------------------------------------
+" Spell Checking
+" ----------------------------------------------------------------------------
+map ss :setlocal spell!<CR>
 
