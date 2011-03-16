@@ -49,10 +49,11 @@ ${if_match ${memperc} >= 75}${color red}${endif}\
 ${membar 8,12 } \
 ${color lightgrey}Swap${color white} ${swapbar 8,12} \
 :: ${color lightgrey}Root${color white} ${fs_bar 8,12 /} \
-${color lightgrey}Data${color white} ${fs_bar 8,10 /mnt/media} \
-${if_up eth0}\
-:: ${addr eth0} ${downspeed eth0}/s - ${upspeed eth0}/s \
+${color lightgrey}Media${color white} ${fs_bar 8,12 /mnt/media} \
+${if_up wlan0}\
+:: ${color #c8ff63}${addr wlan0} ${downspeed wlan0}/s - ${upspeed wlan0}/s \
+${color white}\
 ${endif}\
 ${if_match "${mpd_status}" == "Playing"}\
-:: MPD ${mpd_smart}\
+:: ${color orange}${mpd_smart}\
 ${endif}\
