@@ -17,6 +17,7 @@ filetype indent on
 " ----------------------------------------------------------------------------
 " User Interface
 " ----------------------------------------------------------------------------
+set noerrorbells        " don't make noise
 set showcmd             " Show (partial) command in status line
 set ruler               " Show line & column number
 set nolazyredraw
@@ -29,6 +30,12 @@ syntax on               " Turn on syntax highlighting
 " Highlight portions of lines past the 80th column
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
+" Highlight trailing whitespace
+match OverLength /\s\+$/
+autocmd BufWinEnter * match OverLength /\s\+$/
+autocmd InsertEnter * match OverLength /\s\+\%#\@<!$/
+autocmd InsertLeave * match OverLength /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
@@ -40,6 +47,7 @@ set hlsearch            " Highligh search matches
 set incsearch           " Show search matches as you type
 set ignorecase          " Ignore case in search patterns
 set smartcase           " Override ignorecase if pattern contains capitals
+nmap // :noh<CR>        " Remove search highlighting
 
 " ----------------------------------------------------------------------------
 " Formatting
@@ -47,14 +55,14 @@ set smartcase           " Override ignorecase if pattern contains capitals
 set tabstop=8
 set shiftwidth=8
 set expandtab           " Use spaces instead of tabs
-set smarttab 
+set smarttab
 set autoindent          " Copy indent from current line when starting new line
 set smartindent         " Smart indent on new line, works for C-like langs.
 set textwidth=80        " Set comment text width to 80 chars:
 set formatoptions=c,q,r         " c: Auto-wrap comments to textwidth
                                 " q: Allow formatting comments with "gq".
                                 " r: Automatically insert current comment char
-                             
+
 " ----------------------------------------------------------------------------
 "  Mouse & Keyboard
 " ----------------------------------------------------------------------------
@@ -64,10 +72,16 @@ map <MouseMiddle> <esc>*p       " The mouse to paste unformatted block of code
 set backspace=indent,eol,start  " Influences the working of backspaces
 
 " ----------------------------------------------------------------------------
-" Tabs
+" Tabs and Windows
 " ----------------------------------------------------------------------------
 cmap tn tabnew
 nmap <tab> :tabnext<CR>
+nmap <C-t> :tabnew
+" Smart way to move btw. windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
 
 " ----------------------------------------------------------------------------
 " Conque Plugin
