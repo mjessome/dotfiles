@@ -10,7 +10,8 @@
 set nocompatible
 
 autocmd! bufwritepost vimrc source ~/.vimrc
-cmap w!! %!sudo tee > /dev/null %       " Write file as superuser
+" Write file as superuser
+cmap w!! %!sudo tee > /dev/null %
 filetype plugin on
 filetype indent on
 
@@ -52,8 +53,8 @@ nmap // :noh<CR>        " Remove search highlighting
 " ----------------------------------------------------------------------------
 " Formatting
 " ----------------------------------------------------------------------------
-set tabstop=8
-set shiftwidth=8
+set tabstop=4
+set shiftwidth=4
 set expandtab           " Use spaces instead of tabs
 set smarttab
 set autoindent          " Copy indent from current line when starting new line
@@ -74,9 +75,8 @@ set backspace=indent,eol,start  " Influences the working of backspaces
 " ----------------------------------------------------------------------------
 " Tabs and Windows
 " ----------------------------------------------------------------------------
-cmap tn tabnew
+cmap tbn tabnew
 nmap <tab> :tabnext<CR>
-nmap <C-t> :tabnew
 " Smart way to move btw. windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -112,9 +112,9 @@ au FileType python setlocal number
 
 " Open up a small conque window with the python interpreter at the bottom.
 "au FileType python let g:ConqueTerm_InsertOnEnter=0
-au FileType python :ConqueTermSplit python
-au FileType python :set im&     " Exit insert mode
-au FileType python :res 10
+"au FileType python :ConqueTermSplit python
+"au FileType python :set im&     " Exit insert mode
+"au FileType python :res 10
 
 " ----------------------------------------------------------------------------
 " C/CPP FileTypes
