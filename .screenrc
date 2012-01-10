@@ -1,0 +1,15 @@
+term rxvt-256color
+
+hardstatus alwayslastline
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d %{W}%c %{g}]'
+
+# Start window numbering at 1
+bind c screen 1
+bind 0 select 10
+screen 1
+
+# Turn off the visual bell
+vbell off
+
+# Utf-8 for international character support
+defutf8 on
