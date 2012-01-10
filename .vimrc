@@ -10,10 +10,16 @@
 set nocompatible
 
 autocmd! bufwritepost vimrc source ~/.vimrc
-" Write file as superuser
-cmap w!! %!sudo tee > /dev/null %
+cmap w!! %!sudo tee > /dev/null %       " Write file as superuser
 filetype plugin on
 filetype indent on
+
+" For session saving
+" :mksession /path/to/file
+set sessionoptions=blank,buffers,curdir,folds,globals,help,localoptions,options,resize,tabpages,winsize,winpos
+
+" Use a single swap directory
+set directory^=$HOME/.vim/swp//
 
 " ----------------------------------------------------------------------------
 " User Interface
@@ -24,22 +30,44 @@ set ruler               " Show line & column number
 set nolazyredraw
 set whichwrap+=<,>,h,l  " arrow keys wrap around line
 set wildmenu            " For easier tab completion on command line
-colorscheme icansee
-set background=dark
-syntax on               " Turn on syntax highlighting
 
-" Highlight portions of lines past the 80th column
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
-" Highlight trailing whitespace
-match OverLength /\s\+$/
-autocmd BufWinEnter * match OverLength /\s\+$/
-autocmd InsertEnter * match OverLength /\s\+\%#\@<!$/
-autocmd InsertLeave * match OverLength /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+" Colour Schemes
+set background=dark
+set t_Co=256            "Set terminals to use 256, instead of 16 colors
+colorscheme pw_custom
+let g:zenburn_high_Contrast=1   " high contrast zenburn for dark bg
+let g:zenburn_force_dark_Background = 1
+syntax on               " Turn on syntax highlighting
 
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
+
+" TagList
+cmap tagl TlistToggle 
+let Tlist_WinWidth=40
+map <F8> :TlistToggle<CR> :wincmd =<CR>
+
+
+" Status Line
+set laststatus=2
+set statusline=                              " clear the status line
+set statusline+=%-3.3n\                      " buffer number
+set statusline+=%F%m%r%h\                    " file info
+set statusline+=[%{&ff}]\                    " file formatting
+set statusline+=PWD:\ %{getcwd()}/           " pwd
+set statusline+=%=                           " align right
+set statusline+=%b,0x%-8B\                   " current char
+set statusline+=%-14.(%l,%c%V%)\             " offset
+set statusline+=%<%P\                        " percentage scrolled into file
+
+" Highlight bad formatting:
+"     * Portions of lines past 80 chars wide (79 for python)
+"     * leading tabs
+"     * Whitespace at end of line
+highlight BadFormat ctermbg=red ctermfg=white guibg=#592929
+" TODO: Change these to use a line_width variable, or could also use textwidth.
+au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadFormat /\(\%81v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
+au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
 
 " ----------------------------------------------------------------------------
 " Search
@@ -75,8 +103,7 @@ set backspace=indent,eol,start  " Influences the working of backspaces
 " ----------------------------------------------------------------------------
 " Tabs and Windows
 " ----------------------------------------------------------------------------
-cmap tbn tabnew
-nmap <tab> :tabnext<CR>
+cmap tbn tabnew 
 " Smart way to move btw. windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -104,13 +131,11 @@ cmap gdb Pyclewn
 " ----------------------------------------------------------------------------
 " Python FileType
 " ----------------------------------------------------------------------------
-" Change to witdh of 79
-au FileType python match OverLength /\%80v.\+/
+" Change to width of 79
 au FileType python setlocal textwidth=79
-
 au FileType python setlocal number
 
-" Open up a small conque window with the python interpreter at the bottom.
+" Open up a 10 line conque window with the python interpreter at the bottom.
 "au FileType python let g:ConqueTerm_InsertOnEnter=0
 "au FileType python :ConqueTermSplit python
 "au FileType python :set im&     " Exit insert mode
@@ -119,16 +144,22 @@ au FileType python setlocal number
 " ----------------------------------------------------------------------------
 " C/CPP FileTypes
 " ----------------------------------------------------------------------------
-au FileType c,cpp,cc,C setlocal number
+au FileType c,cpp,cc,C,h setlocal number
 
 " ----------------------------------------------------------------------------
 " HTM/HTML/PHP FileTypes
 " ----------------------------------------------------------------------------
-au FileType html,htm,php setlocal tabstop=2
-au FileType html,htm,php setlocal shiftwidth=2
+au FileType html,htm,php,xml setlocal tabstop=2
+au FileType html,htm,php,xml setlocal shiftwidth=2
+au FileType html,htm,php,xml setlocal number
+
+" ----------------------------------------------------------------------------
+" Vim FileType
+" ----------------------------------------------------------------------------
+au FileType vim setlocal number
 
 " ----------------------------------------------------------------------------
 " Spell Checking
 " ----------------------------------------------------------------------------
-map ss :setlocal spell!<CR>
+"map ss :setlocal spell!<CR>
 
