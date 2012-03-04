@@ -3,10 +3,8 @@
 PS1='[\u@\e[1;33m\]\h\e[0m\] \W]\$ '
 if [ -r /etc/bash_completion ]; then
     source /etc/bash_completion.d/git-completion.bash
-    PS1='[\u@\e[1;32m\]\h\e[0m\] \W$(__git_ps1 " \e[1;35m\](%s)\e[0m\]")]\$ '
+    PS1='[\u@\e[1;32m\]\h\e[0m\] \W$(__git_ps1 " \e[1;35m\](%s)\e[0m\]")]\]\n$ '
 fi
-
-alias minecraft='java -jar /mnt/media/games/Minecraft/Minecraft_n00b_edition.jar'
 
 ### sudo shortcuts ###
 alias halt='sudo halt'
@@ -26,7 +24,7 @@ alias qfind='find|grep -i $1' # quick find
 
 alias grep='grep --color' # always colour grep output
 
-alias screen='screen -U'    # utf-8 screen
+alias wpa='sudo wpa_supplicant -iwlan0 -c/etc/wpa_supplicant.conf'
 
 ### pacman ###
 #alias pacman='yaourt'
