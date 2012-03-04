@@ -46,19 +46,25 @@ alias gdb='gdb -silent'
 
 # list all processes matching the argument,
 # and exclude the grep command
-function running() { ps aux | grep $1 | grep -v -P "grep .*$1"; }
+function running() {
+    ps aux | grep $1 | grep -v -P "grep .*$1";
+}
 
 # generate a spectrogram of the specified file.
 function spectra() {
     F=/tmp/spectra.${RANDOM}.png;
     sox "$1" -n spectrogram -o "$F";
-    if [ $? -eq 0 ]; then
+    RC=$?
+    if [ $RC -eq 0 ]; then
         echo "Spectrogram output to $F"
         feh "$F"
     fi
+    return $RC
 }
 
-function mkcd() { mkdir "$1" && cd "$1"; }
+function mkcd() {
+    mkdir "$1" && cd "$1";
+}
 
 # start, stop, restart, reload - simple daemon management
 ## usage: start <daemon-name>
