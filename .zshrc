@@ -12,7 +12,8 @@ bindkey -v
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/marc/.zshrc'
 
-autoload -Uz compinit compinit
+autoload -Uz compinit
+compinit
 # End of lines added by compinstall
 
 # save timestamp with history
