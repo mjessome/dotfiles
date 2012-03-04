@@ -9,6 +9,8 @@
 " Use Vim settings rather than Vi settings
 set nocompatible
 
+call pathogen#infect()
+
 autocmd! bufwritepost vimrc source ~/.vimrc
 cmap w!! %!sudo tee > /dev/null %       " Write file as superuser
 filetype plugin on
@@ -19,7 +21,7 @@ filetype indent on
 set sessionoptions=blank,buffers,curdir,folds,globals,help,localoptions,options,resize,tabpages,winsize,winpos
 
 " Use a single swap directory
-set directory^=$HOME/.vim/swp//
+set directory^=$HOME/.vim/swp/
 
 " ----------------------------------------------------------------------------
 " User Interface
@@ -30,13 +32,14 @@ set ruler               " Show line & column number
 set nolazyredraw
 set whichwrap+=<,>,h,l  " arrow keys wrap around line
 set wildmenu            " For easier tab completion on command line
+set number
 
 " Colour Schemes
 set background=dark
 set t_Co=256            "Set terminals to use 256, instead of 16 colors
-colorscheme pw_custom
 let g:zenburn_high_Contrast=1   " high contrast zenburn for dark bg
 let g:zenburn_force_dark_Background = 1
+colorscheme zenburn
 syntax on               " Turn on syntax highlighting
 
 set showmatch           " briefly jump to matching bracket upon bracket insert
@@ -59,6 +62,8 @@ set statusline+=%=                           " align right
 set statusline+=%b,0x%-8B\                   " current char
 set statusline+=%-14.(%l,%c%V%)\             " offset
 set statusline+=%<%P\                        " percentage scrolled into file
+
+set colorcolumn=+0
 
 " Highlight bad formatting:
 "     * Portions of lines past 80 chars wide (79 for python)
@@ -111,19 +116,6 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " ----------------------------------------------------------------------------
-" Conque Plugin
-" ----------------------------------------------------------------------------
-let g:ConqueTerm_CloseOnEnd=1       " Close the tab upon program completion
-"let g:ConqueTerm_EscKey='<C-w>'     " Exit insert on <C-w>, so 3x<C-w> to
-                                    " go back to main window.
-"let g:ConqueTerm_CWInsert=1        " Allow <C-w> to leave buffer while in
-                                    " insert mode.
-let g:ConqueTerm_PyVersion=3
-let g:ConqueTerm_SendVisKey='<F9>'  " Send selection to conque buffer on F9
-let g:ConqueTerm_ReadUnfocused=1
-let g:ConqueTerm_InsertOnEnter=1
-
-" ----------------------------------------------------------------------------
 " PyClewn Plugin
 " ----------------------------------------------------------------------------
 cmap gdb Pyclewn
@@ -157,9 +149,4 @@ au FileType html,htm,php,xml setlocal number
 " Vim FileType
 " ----------------------------------------------------------------------------
 au FileType vim setlocal number
-
-" ----------------------------------------------------------------------------
-" Spell Checking
-" ----------------------------------------------------------------------------
-"map ss :setlocal spell!<CR>
 
