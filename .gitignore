@@ -1,2 +1,6 @@
 *.swp
+.vim/swp/
+.vim/undo/
+.vim/.VimballRecord
+.vim/.netrwhist
 
