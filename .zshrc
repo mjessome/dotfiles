@@ -1,27 +1,67 @@
 [ -z "$PS1" ] && return
 
-# Lines configured by zsh-newuser-install
-HISTFILE=~/.zsh_history
-HISTSIZE=1000
-SAVEHIST=5000
-unsetopt beep
-# use vim keybindings
-bindkey -v
+export EDITOR='vim'
 
-# End of lines configured by zsh-newuser-install
-# The following lines were added by compinstall
-zstyle :compinstall filename '/home/marc/.zshrc'
+unsetopt beep # turn of system beep
+bindkey -v  # use vim keybindings
 
 autoload -Uz compinit
 compinit
-# End of lines added by compinstall
+zmodload zsh/stat
+zstyle :compinstall filename '/home/marc/.zshrc'
 
-# save timestamp with history
-setopt extendedhistory
+# instead of xargs, zargs
+# example: zargs **/* -- grep "match this"
+autoload -U zargs
 
+# report how long a command took above certain run time
+REPORTTIME=5
+TIMEFMT="%U user %S system %P cpu %*Es total"
+
+# Prompt for confirmation after globbed rm
+# eg. 'rm *' or 'rm *.c'
+setopt RM_STAR_WAIT
+# dont pipe into existing files, need >!
+setopt NOCLOBBER
+# Background processes aren't killed on exit of shell
+setopt AUTO_CONTINUE
+# don't use 'nice' on bg processes
+setopt NO_BG_NICE
+# watch user logins/outs
+watch=notme
+LOGCHECK=60
+
+##########################
+#       COMPLETION       #
+##########################
 # case insensitive globbing
 setopt extendedglob
-unsetopt CASE_GLOB
+unsetopt caseglob
+# Write globbed files out
+autoload insert-files
+zle -N insert-files
+bindkey '^Xf' insert-files
+# renaming with globbing
+autoload zmv
+# select by menu for kill command
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+# remove trailing / on directories
+zstyle ':completion:*' squeeze-slashes true
+
+#######################
+#       HISTORY       #
+#######################
+HISTFILE=~/.zhistory
+HISTSIZE=10000
+SAVEHIST=10000
+setopt sharehistory
+setopt incappendhistory 
+setopt extendedhistory
+setopt hist_ignore_space
+setopt hist_reduce_blanks
 
 #######################
 #       ALIASES       #
@@ -43,17 +83,20 @@ alias yrtss='yrt -Ss'
 alias yrtq='yrt -Q|grep'
 
 ### suffixes ###
-alias -s c='vim'
-alias -s cpp='vim'
-alias -s cc='vim'
-alias -s h='vim'
-alias -s txt='vim'
-alias -s rc='vim'
+alias -s c='${EDITOR}'
+alias -s cpp='${EDITOR}'
+alias -s cc='${EDITOR}'
+alias -s h='${EDITOR}'
+alias -s txt='${EDITOR}'
+alias -s rc='${EDITOR}'
+alias -s pdf='zathura'
 
 ### default options ###
 alias ls='ls --color'
 alias history='history -i'
 alias df='df -h'
+alias mkdir='mkdir -p'
+alias stat='stat -sn'
 
 ### command shortening ###
 alias lsa='ls -a'
@@ -62,15 +105,25 @@ alias lsl='ls -l'
 alias :q='exit'
 alias grep='grep --color'
 
+### common typos ###
+alias gti='git'
+alias cd..='cd ../'
+
 ### application renaming ###
 alias html2pdf='wkhtmltopdf'
 alias vdiff='vimdiff'
-alias gti='git'
 alias vi='vim'
 
 ### programming ###
 alias vgrind='valgrind --leak-check=yes --show-reachable=yes'
 alias gdb='gdb -silent'
+
+### global aliases ###
+alias -g G='| grep'
+alias -g X='| xargs'
+alias -g ...='../../'
+alias -g ....='../../../'
+alias -g .....='../../../..'
 
 #########################
 #       FUNCTIONS       #
@@ -116,12 +169,19 @@ reload() {
                 sudo /etc/rc.d/$arg reload
         done
 }
+# When directory is changed set xterm title to host:dir
+chpwd() {
+    [[ -t 1 ]] || return
+    case $TERM in
+        sun-cmd) print -Pn "\e]l%~\e\\";;
+        *xterm*|*rxvt*|(dt|k|E)term) print -Pn "\e]2;%m: %~\a";;
+    esac
+}
 
 #######################
 #       PROMPTS       #
 #######################
 autoload -U colors && colors
-
 # VCS info. Supports git, hg, cvs, svn
 autoload -Uz vcs_info
 setopt prompt_subst
@@ -137,7 +197,6 @@ vcs_info_wrapper() {
     echo "%{$fg_bold[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
   fi
 }
-
 # colour username blue for zsh, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
 export PS1="[%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m\
