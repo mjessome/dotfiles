@@ -1,0 +1,26 @@
+[user]
+	name = Marc Jessome
+	email = marc.jessome@gmail.com
+[alias]
+    di=diff -U8
+    d = difftool
+    co = checkout
+    lg = log --stat --decorate
+    lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    merget = mergetool
+[color]
+	branch = auto
+	diff = auto
+    interactive = auto
+	status = auto
+[apply]
+    whitespace = strip
+[core]
+    editor = vim
+[diff]
+    renames = true
+    tool = vimdiff
+[difftool]
+	prompt = false
+[merge]
+    tool = vimdiff
