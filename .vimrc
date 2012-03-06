@@ -8,11 +8,14 @@
 
 " Use Vim settings rather than Vi settings
 set nocompatible
+set encoding=utf-8
 
+" call pathogen to install plugins from .vim/bundle
 call pathogen#infect()
 
 autocmd! bufwritepost vimrc source ~/.vimrc
-cmap w!! %!sudo tee > /dev/null %       " Write file as superuser
+" Write file as superuser
+cmap w!! %!sudo tee > /dev/null %
 filetype plugin on
 filetype indent on
 
@@ -20,8 +23,17 @@ filetype indent on
 " :mksession /path/to/file
 set sessionoptions=blank,buffers,curdir,folds,globals,help,localoptions,options,resize,tabpages,winsize,winpos
 
+" ----------------------------------------------------------------------------
+" File Handling
+" ----------------------------------------------------------------------------
 " Use a single swap directory
 set directory^=$HOME/.vim/swp/
+" Persistent undo dir
+try
+    set undodir=~/.vim/undo
+    set undolevels=1000
+    set undofile
+endtry
 
 " ----------------------------------------------------------------------------
 " User Interface
@@ -34,6 +46,10 @@ set whichwrap+=<,>,h,l  " arrow keys wrap around line
 set wildmenu            " For easier tab completion on command line
 set number
 
+" Get rid of the F1 mapping to help
+:nmap <F1> <nop>
+:imap <F1> <nop>
+
 " Colour Schemes
 set background=dark
 set t_Co=256            "Set terminals to use 256, instead of 16 colors
@@ -45,25 +61,28 @@ syntax on               " Turn on syntax highlighting
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
 
-" TagList
-cmap tagl TlistToggle 
+" Tagbar
+cmap tagb TagbarToggle
 let Tlist_WinWidth=40
-map <F8> :TlistToggle<CR> :wincmd =<CR>
-
+map <F8> :TagbarToggle<CR> :wincmd =<CR>
 
 " Status Line
 set laststatus=2
 set statusline=                              " clear the status line
-set statusline+=%-3.3n\                      " buffer number
-set statusline+=%F%m%r%h\                    " file info
-set statusline+=[%{&ff}]\                    " file formatting
-set statusline+=PWD:\ %{getcwd()}/           " pwd
+set statusline=%-3.3n                        " buffer number
+set statusline+=%f%m%r%h\                    " file info
+set statusline+=[%{&ff}]\ \ \ \              " file formatting
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%{fugitive#statusline()}
+set statusline+=%*
 set statusline+=%=                           " align right
 set statusline+=%b,0x%-8B\                   " current char
 set statusline+=%-14.(%l,%c%V%)\             " offset
 set statusline+=%<%P\                        " percentage scrolled into file
 
-set colorcolumn=+0
+" Gitv
+let g:Gitv_TruncateCommitSubjects=1
 
 " Highlight bad formatting:
 "     * Portions of lines past 80 chars wide (79 for python)
@@ -73,6 +92,14 @@ highlight BadFormat ctermbg=red ctermfg=white guibg=#592929
 " TODO: Change these to use a line_width variable, or could also use textwidth.
 au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadFormat /\(\%81v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
 au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
+" Place a coloured column at textwidth
+if exists('+colorcolumn')
+    set colorcolumn=+0
+    highlight ColorColumn ctermbg=234
+endif
+
+" set local pwd to same as file
+cmap slpwd :lcd $:p:h<CR>
 
 " ----------------------------------------------------------------------------
 " Search
@@ -116,22 +143,13 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " ----------------------------------------------------------------------------
-" PyClewn Plugin
-" ----------------------------------------------------------------------------
-cmap gdb Pyclewn
-
-" ----------------------------------------------------------------------------
 " Python FileType
 " ----------------------------------------------------------------------------
 " Change to width of 79
 au FileType python setlocal textwidth=79
 au FileType python setlocal number
-
-" Open up a 10 line conque window with the python interpreter at the bottom.
-"au FileType python let g:ConqueTerm_InsertOnEnter=0
-"au FileType python :ConqueTermSplit python
-"au FileType python :set im&     " Exit insert mode
-"au FileType python :res 10
+au FileType python inoremap <buffer> $p print
+au FileType python inoremap <buffer> $i import
 
 " ----------------------------------------------------------------------------
 " C/CPP FileTypes
