@@ -104,6 +104,7 @@ alias lla='ls -la'
 alias lsl='ls -l'
 alias :q='exit'
 alias grep='grep --color'
+alias szsh='source ~/.zshrc'
 
 ### common typos ###
 alias gti='git'
@@ -121,6 +122,7 @@ alias gdb='gdb -silent'
 ### global aliases ###
 alias -g G='| grep'
 alias -g X='| xargs'
+alias -g XG='| xargs grep'
 alias -g ...='../../'
 alias -g ....='../../../'
 alias -g .....='../../../..'
@@ -182,26 +184,15 @@ chpwd() {
 #       PROMPTS       #
 #######################
 autoload -U colors && colors
-# VCS info. Supports git, hg, cvs, svn
-autoload -Uz vcs_info
-setopt prompt_subst
-zstyle ':vcs_info:*' disable bzr cdv darcs mtn svk tla
-zstyle ':vcs_info:*' actionformats \
-    '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
-zstyle ':vcs_info:*' formats       \
-    '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '
-zstyle ':vcs_info:(sv[nk]|bzr):*' branchformat '%b%F{1}:%F{3}%r'
-vcs_info_wrapper() {
-  vcs_info
-  if [ -n "$vcs_info_msg_0_" ]; then
-    echo "%{$fg_bold[grey]%}${vcs_info_msg_0_}%{$reset_color%}$del"
-  fi
-}
-# colour username blue for zsh, hostname green, vc_info
+# allow functions in the prompt
+setopt PROMPT_SUBST
+fpath+=~/.zsh/functions
+autoload -U ~/.zsh/functions/*(:t)
+# colour username blue, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
-export PS1="[%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m\
-%{$reset_color%} %1d] $(vcs_info_wrapper)
-%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} "
+PROMPT=$'[%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d$(git_info)%{$reset_color%}]
+%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
+
 
 ###########################
 #       KEYBINDINGS       #
