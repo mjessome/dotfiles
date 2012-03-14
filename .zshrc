@@ -57,7 +57,6 @@ zstyle ':completion:*' squeeze-slashes true
 HISTFILE=~/.zhistory
 HISTSIZE=10000
 SAVEHIST=10000
-setopt sharehistory
 setopt incappendhistory 
 setopt extendedhistory
 setopt hist_ignore_space
@@ -193,10 +192,10 @@ autoload -U ~/.zsh/functions/*(:t)
 PROMPT=$'[%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d$(git_info)%{$reset_color%}]
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
-
 ###########################
 #       KEYBINDINGS       #
 ###########################
+bindkey '^?' backward-delete-char
 bindkey "\e[1~" beginning-of-line # Home for xterm
 bindkey "\e[4~" end-of-line # End for rxvt
 bindkey "\e[7~" beginning-of-line # Home for rxvt
