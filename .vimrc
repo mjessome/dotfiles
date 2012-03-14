@@ -56,7 +56,6 @@ set t_Co=256            "Set terminals to use 256, instead of 16 colors
 let g:zenburn_high_Contrast=1   " high contrast zenburn for dark bg
 let g:zenburn_force_dark_Background = 1
 colorscheme zenburn
-syntax on               " Turn on syntax highlighting
 
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
@@ -97,6 +96,10 @@ if exists('+colorcolumn')
     set colorcolumn=+0
     highlight ColorColumn ctermbg=234
 endif
+
+syntax on               " Turn on syntax highlighting
+                        " This has to come after colorcolumn in order to
+                        " draw it.
 
 " set local pwd to same as file
 cmap slpwd :lcd $:p:h<CR>
