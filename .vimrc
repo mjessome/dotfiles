@@ -83,14 +83,6 @@ set statusline+=%<%P\                        " percentage scrolled into file
 " Gitv
 let g:Gitv_TruncateCommitSubjects=1
 
-" Highlight bad formatting:
-"     * Portions of lines past 80 chars wide (79 for python)
-"     * leading tabs
-"     * Whitespace at end of line
-highlight BadFormat ctermbg=red ctermfg=white guibg=#592929
-" TODO: Change these to use a line_width variable, or could also use textwidth.
-au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadFormat /\(\%81v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
-au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
 " Place a coloured column at textwidth
 if exists('+colorcolumn')
     set colorcolumn=+0
@@ -100,6 +92,15 @@ endif
 syntax on               " Turn on syntax highlighting
                         " This has to come after colorcolumn in order to
                         " draw it.
+
+" Highlight bad formatting:
+"     * Portions of lines past 80 chars wide (79 for python)
+"     * leading tabs
+"     * Whitespace at end of line
+highlight BadFormat ctermbg=red ctermfg=white guibg=#592929
+" TODO: Change these to use a line_width variable, or could also use textwidth.
+au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadFormat /\(\%81v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
+au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
 
 " set local pwd to same as file
 cmap slpwd :lcd $:p:h<CR>
