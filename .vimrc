@@ -65,6 +65,9 @@ cmap tagb TagbarToggle
 let Tlist_WinWidth=40
 map <F8> :TagbarToggle<CR> :wincmd =<CR>
 
+" Local vimrc loading
+let g:localvimrc_ask=0
+
 " Status Line
 set laststatus=2
 set statusline=                              " clear the status line
