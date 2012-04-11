@@ -3,7 +3,7 @@ URxvt*matcher.button:	2
 URxvt*borderLess:	false
 URxvt*color3:	rgb:96/8a/38
 URxvt*shading:	40
-URxvt*boldFont:	xft:Terminus:bols:pixelsize=12:antialias=false
+URxvt*boldFont:	xft:Terminus:bold:pixelsize=14:antialias=false
 URxvt*color13:	rgb:cf/9e/be
 URxvt*background:	#000000
 URxvt*color7:	rgb:be/be/be
@@ -15,7 +15,7 @@ URxvt*color2:	rgb:ae/ce/92
 URxvt*color6:	rgb:41/81/79
 URxvt*color4:	rgb:41/41/71
 URxvt*color0:	rgb:00/00/00
-URxvt*font:	xft:Terminus:pixelsize=12:antialias=false
+URxvt*font:	xft:Terminus:pixelsize=14:antialias=false
 URxvt*termName:	rxvt-256color
 URxvt*transparent:	true
 URxvt*scrollBar:	false
