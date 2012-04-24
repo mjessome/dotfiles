@@ -46,6 +46,8 @@ set whichwrap+=<,>,h,l  " arrow keys wrap around line
 set wildmenu            " For easier tab completion on command line
 set number
 
+cmap :tc tagclose
+
 " Get rid of the F1 mapping to help
 :nmap <F1> <nop>
 :imap <F1> <nop>
@@ -64,6 +66,7 @@ set matchtime=1         " How many 10ths of a second to show the match for
 cmap tagb TagbarToggle
 let Tlist_WinWidth=40
 map <F8> :TagbarToggle<CR> :wincmd =<CR>
+let g:tagbar_autofocus = 1
 
 " Local vimrc loading
 let g:localvimrc_ask=0
@@ -106,7 +109,7 @@ au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadForm
 au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
 
 " set local pwd to same as file
-cmap slpwd :lcd $:p:h<CR>
+cmap cwd :lcd $:p:h<CR>
 
 " ----------------------------------------------------------------------------
 " Search
@@ -130,6 +133,8 @@ set textwidth=80        " Set comment text width to 80 chars:
 set formatoptions=c,q,r         " c: Auto-wrap comments to textwidth
                                 " q: Allow formatting comments with "gq".
                                 " r: Automatically insert current comment char
+" don't put comment leader in column 0 as caused by smartindent
+:inoremap # X<BS>#
 
 " ----------------------------------------------------------------------------
 "  Mouse & Keyboard
