@@ -5,6 +5,10 @@ export EDITOR='vim'
 unsetopt beep # turn of system beep
 bindkey -v  # use vim keybindings
 
+# remove the need for ""s around urls in commands.
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic
+
 autoload -Uz compinit
 compinit
 zmodload zsh/stat
@@ -50,6 +54,9 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 # remove trailing / on directories
 zstyle ':completion:*' squeeze-slashes true
+# Colours on completion
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 #######################
 #       HISTORY       #
@@ -104,6 +111,7 @@ alias lsl='ls -l'
 alias :q='exit'
 alias grep='grep --color'
 alias szsh='source ~/.zshrc'
+alias fhist='fc -il 1'
 
 ### common typos ###
 alias gti='git'
@@ -125,6 +133,8 @@ alias -g XG='| xargs grep'
 alias -g ...='../../'
 alias -g ....='../../../'
 alias -g .....='../../../..'
+alias -g V='| vim -'
+alias -g VIM='| vim -'
 
 #########################
 #       FUNCTIONS       #
@@ -145,7 +155,11 @@ function spectra() {
     return $RC
 }
 function mkcd() {
-    mkdir "$1" && cd "$1"
+    if [[ ! -d "$1" ]]; then
+        mkdir -p "$1" && cd "$1"
+    else
+        cd "$1"
+    fi
 }
 # start, stop, restart, reload - simple daemon management
 ## usage: start <daemon-name>
@@ -187,9 +201,13 @@ autoload -U colors && colors
 setopt PROMPT_SUBST
 fpath+=~/.zsh/functions
 autoload -U ~/.zsh/functions/*(:t)
-# colour username blue, hostname green, vc_info
+# get git-completion.bash from the git source distribution
+source /usr/local/bin/git-completion.bash
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWSTASHSTATE=1
+# colour username blue for zsh, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
-PROMPT=$'[%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d$(git_info)%{$reset_color%}]
+PROMPT=$'[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
 ###########################
