@@ -19,6 +19,7 @@ URxvt*font:	xft:Terminus:pixelsize=14:antialias=false
 URxvt*termName:	rxvt-256color
 URxvt*transparent:	true
 URxvt*scrollBar:	false
+URxvt*saveLines: 6000
 URxvt*color10:	rgb:c5/f7/79
 URxvt*foreground:	#FFFFFF
 URxvt*color12:	rgb:41/86/be
