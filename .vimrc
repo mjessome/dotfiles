@@ -133,8 +133,6 @@ set textwidth=80        " Set comment text width to 80 chars:
 set formatoptions=c,q,r         " c: Auto-wrap comments to textwidth
                                 " q: Allow formatting comments with "gq".
                                 " r: Automatically insert current comment char
-" don't put comment leader in column 0 as caused by smartindent
-:inoremap # X<BS>#
 
 " ----------------------------------------------------------------------------
 "  Mouse & Keyboard
@@ -162,6 +160,8 @@ au FileType python setlocal textwidth=79
 au FileType python setlocal number
 au FileType python inoremap <buffer> $p print
 au FileType python inoremap <buffer> $i import
+" don't put comment leader in column 0 as caused by smartindent
+au FileType python inoremap # X<BS>#
 
 " ----------------------------------------------------------------------------
 " C/CPP FileTypes
