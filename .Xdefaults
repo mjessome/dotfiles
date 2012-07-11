@@ -32,6 +32,7 @@ URxvt*color15:	rgb:ff/ff/ff
 
 URxvt*termName:	rxvt-256color
 URxvt*scrollBar:	false
+URxvt*saveLines: 6000
 URxvt*urlLauncher:	firefox
 URxvt*perl-ext-common:	default,matcher
 
