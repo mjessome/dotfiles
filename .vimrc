@@ -180,3 +180,17 @@ au FileType html,htm,php,xml setlocal number
 " ----------------------------------------------------------------------------
 au FileType vim setlocal number
 
+cmap tc :tabclose
+set switchbuf=useopen
+function! MakeWithCopen()
+    make!
+    let qflist = getqflist()
+    for e in qflist
+        if e.valid
+            tabnew
+            copen
+            cc
+            break
+        endif
+    endfor
+endfunction
