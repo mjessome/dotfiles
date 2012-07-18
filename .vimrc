@@ -44,9 +44,11 @@ set ruler               " Show line & column number
 set nolazyredraw
 set whichwrap+=<,>,h,l  " arrow keys wrap around line
 set wildmenu            " For easier tab completion on command line
-set number
-
-cmap :tc tagclose
+set ttyfast
+set laststatus=2
+let mapleader=","
+" Get rid of delay in command mode, for eg. <ESC>O
+set timeout timeoutlen=1000 ttimeoutlen=1000
 
 " Get rid of the F1 mapping to help
 :nmap <F1> <nop>
@@ -62,6 +64,9 @@ colorscheme zenburn
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
 
+" ----------------------------------------------------------------------------
+" Plugin Settings
+" ----------------------------------------------------------------------------
 " Tagbar
 cmap tagb TagbarToggle
 let Tlist_WinWidth=40
@@ -70,6 +75,12 @@ let g:tagbar_autofocus = 1
 
 " Local vimrc loading
 let g:localvimrc_ask=0
+
+" Gitv
+let g:Gitv_TruncateCommitSubjects=1
+
+" Ack
+nnoremap <leader>a :Ack 
 
 " Status Line
 set laststatus=2
@@ -100,16 +111,65 @@ syntax on               " Turn on syntax highlighting
                         " draw it.
 
 " Highlight bad formatting:
-"     * Portions of lines past 80 chars wide (79 for python)
-"     * leading tabs
-"     * Whitespace at end of line
-highlight BadFormat ctermbg=red ctermfg=white guibg=#592929
-" TODO: Change these to use a line_width variable, or could also use textwidth.
-au BufRead,BufnewFile *.C,*.c,*.h,*.cpp,*.cc,*.js,*.ps,*.sh,*.bash match BadFormat /\(\%81v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
-au BufRead,BufnewFile *.py,*.pyw match BadFormat /\(\%80v.\+\)\|\(^\t\+\)\|\(\s\+$\)/
+"     * Portions of lines past 'textwidth', or defaults to 80
+"           (set g:long_line_m)
+"     * leading tabs    (set g:leading_tab_m)
+"     * Whitespace at end of line (set g:trailing_whitespace_m)
+highlight LongLine ctermbg=grey ctermfg=black guibg=#592929
+highlight LeadingTab ctermbg=grey ctermfg=white
+highlight TrailingWhitespace ctermbg=grey ctermfg=white
+function! ToggleFormatMatching()
+    if exists('w:format_match')
+        call clearmatches()
+        unlet w:format_match
+        if exists('w:long_line')
+            unlet w:long_line
+        endif
+        if exists('w:leading_tab')
+            unlet w:leading_tab
+        endif
+        if exists('w:trailing_whitespace')
+            unlet w:trailing_whitespace
+        endif
+    else
+        let w:format_match = 1
+        if g:long_line_m
+            if &textwidth > 0
+                let w:long_line = matchadd('LongLine', '\%'.&tw.'v.\+', -1)
+            else
+                let w:long_line = matchadd('LongLine', '\%80v.\+', -1)
+            endif
+        endif
+        if g:leading_tab_m
+            let w:leading_tab = matchadd('LeadingTab', '^\t\+', -1)
+        endif
+        if g:trailing_whitespace_m
+            let w:trailing_whitespace = matchadd('TrailingWhitespace', '\s\+$', -1)
+        endif
+    endif
+endfunction
+let g:long_line_m = 1
+let g:leading_tab_m = 1
+let g:trailing_whitespace_m = 1
+nnoremap <silent><leader>h :call ToggleFormatMatching()<CR>
 
-" set local pwd to same as file
-cmap cwd :lcd $:p:h<CR>
+" reselect just pasted text
+nnoremap <leader>v V`]
+
+if exists('+colorcolumn')
+    set colorcolumn=+0
+    highlight ColorColumn ctermbg=234
+endif
+
+cmap cwd :lcd %:p:h<CR>
+map <leader>p :setlocal paste!<CR>
+
+" Rainbow Parentheses
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+au Syntax * RainbowParenthesesLoadChevrons
+map <leader>r :RainbowParenthesesToggleAll<CR>
 
 " ----------------------------------------------------------------------------
 " Search
@@ -142,10 +202,37 @@ set mousehide       " Hide the mouse while typing
 map <MouseMiddle> <esc>*p       " The mouse to paste unformatted block of code
 set backspace=indent,eol,start  " Influences the working of backspaces
 
+" Get rid of arrow keys.
+nnoremap <Up> <nop>
+nnoremap <Down> <nop>
+nnoremap <Left> <nop>
+nnoremap <Right> <nop>
+inoremap <Up> <nop>
+inoremap <Down> <nop>
+inoremap <Left> <nop>
+inoremap <Right> <nop>
+" movement done by visual line, not file line
+nnoremap j gj
+nnoremap k gk
+" bash-like movement
+inoremap <C-a> <esc>I
+inoremap <C-e> <esc>A
+cnoremap <C-a> <home>
+cnoremap <C-e> <end>
+vnoremap <C-a> ^
+vnoremap <C-e> g_
+
+" quicker escaping
+inoremap jj <ESC>
+
 " ----------------------------------------------------------------------------
-" Tabs and Windows
+" Tabs, Windows and Buffers
 " ----------------------------------------------------------------------------
+set switchbuf=useopen
+" can have unwritten buffers in background
+set hidden
 cmap tbn tabnew 
+cmap <leader>tc tagclose
 " Smart way to move btw. windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -158,8 +245,11 @@ map <C-l> <C-W>l
 " Change to width of 79
 au FileType python setlocal textwidth=79
 au FileType python setlocal number
+au FileType python call ToggleFormatMatching()
+
 au FileType python inoremap <buffer> $p print
 au FileType python inoremap <buffer> $i import
+
 " don't put comment leader in column 0 as caused by smartindent
 au FileType python inoremap # X<BS>#
 
@@ -167,6 +257,13 @@ au FileType python inoremap # X<BS>#
 " C/CPP FileTypes
 " ----------------------------------------------------------------------------
 au FileType c,cpp,cc,C,h setlocal number
+au FileType c,cpp,cc,C,h,hpp,s,asm call ToggleFormatMatching()
+au FileType c,cpp,cc,C,h,hpp,s,asm map <F2> :call MakeWithCopen()<CR>
+au FileType c,cpp,cc,C,h,hpp,s,asm map <F3> :cprev<CR>zz
+au FileType c,cpp,cc,C,h,hpp,s,asm map <F4> :cnext<CR>zz
+
+au FileType c,cpp,cc,C,h,hpp inoremap <buffer> #in #include 
+au FileType c,cpp,cc,C,h,hpp inoremap <buffer> #def #define 
 
 " ----------------------------------------------------------------------------
 " HTM/HTML/PHP FileTypes
@@ -174,14 +271,45 @@ au FileType c,cpp,cc,C,h setlocal number
 au FileType html,htm,php,xml setlocal tabstop=2
 au FileType html,htm,php,xml setlocal shiftwidth=2
 au FileType html,htm,php,xml setlocal number
+au FileType html,htm,php,xml call ToggleFormatMatching()
 
 " ----------------------------------------------------------------------------
 " Vim FileType
 " ----------------------------------------------------------------------------
 au FileType vim setlocal number
+au FileType vim call ToggleFormatMatching()
+autocmd! bufwritepost .vimrc source ~/.vimrc
 
-cmap tc :tabclose
-set switchbuf=useopen
+" ----------------------------------------------------------------------------
+" Makefile FileType
+" ----------------------------------------------------------------------------
+au FileType make setlocal noexpandtab
+au FileType make let g:leading_tab_m=0
+au FileType make call ToggleFormatMatching()
+
+" ----------------------------------------------------------------------------
+" Shell Script FileTypes
+" ----------------------------------------------------------------------------
+au FileType zsh,bash,sh setlocal number
+au FileType zsh,bash,sh call ToggleFormatMatching()
+
+" ----------------------------------------------------------------------------
+" Lisp-like FileTypes
+" ----------------------------------------------------------------------------
+au FileType lisp,scheme setlocal number
+au FileType lisp,scheme call ToggleFormatMatching()
+au FileType list,scheme :RainbowParenthesesToggleAll<CR>
+
+" Quickly toggle sequential & relative line numbering
+function! ToggleNumberMode()
+    if (&relativenumber && !&number)
+        set number
+    elseif (&number && !&relativenumber)
+        set relativenumber
+    endif
+endfunction
+nnoremap <silent><leader>n :call  ToggleNumberMode()<CR>
+
 function! MakeWithCopen()
     make!
     let qflist = getqflist()
@@ -194,3 +322,4 @@ function! MakeWithCopen()
         endif
     endfor
 endfunction
+
