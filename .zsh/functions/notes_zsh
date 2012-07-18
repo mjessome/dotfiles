@@ -1,0 +1,61 @@
+#!/bin/zsh
+
+__set_notes_var() {
+    if [[ ! -n $NOTES ]]; then
+        NOTES=/mnt/mvol/prompt_notes
+    fi
+}
+
+Ndisp() {
+    __set_notes_var
+
+    if [[ ! -f $NOTES ]]; then
+        return
+    fi
+
+    print -n "%{$bg_bold[red]%}"
+    for i in "$(cat $NOTES)"; do
+        [[ -z "$i" ]] || print "$i"
+    done
+    print "%{$reset_color%}"
+}
+
+Npush() {
+    if [[ -z $1 ]]; then
+        return
+    fi
+
+    __set_notes_var
+
+    for i in $@; do
+        echo -e $i >>! $NOTES
+    done
+}
+
+Npop() {
+    __set_notes_var
+
+    if [[ ! -f $NOTES ]]; then
+        return
+    fi
+
+    # cut out the oldest note in the list
+    for i in "$(tail -n +2 $NOTES)"; do
+        echo $i >! $NOTES
+    done
+
+    if [[ -z "$(grep -v "^$" $NOTES)" ]]; then
+        rm $NOTES
+    fi
+}
+
+Nclear() {
+    __set_notes_var
+
+    if [[ ! -f $NOTES ]]; then
+        return
+    fi
+
+    rm $NOTES
+}
+

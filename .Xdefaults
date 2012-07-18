@@ -1,34 +1,43 @@
+URxvt*font:	xft:Terminus:pixelsize=14:antialias=false
+URxvt*boldFont:	xft:Terminus:bold:pixelsize=14:antialias=false
+URxvt*underlineURLs:	true
+
 URxvt*keysym.M-u        perl:	url-select:select_next
+
 URxvt*matcher.button:	2
 URxvt*borderLess:	false
 URxvt*color3:	rgb:96/8a/38
-URxvt*shading:	40
-URxvt*boldFont:	xft:Terminus:bold:pixelsize=14:antialias=false
-URxvt*color13:	rgb:cf/9e/be
-URxvt*background:	#000000
-URxvt*color7:	rgb:be/be/be
-URxvt*color9:	rgb:cf/61/71
-URxvt*underlineURLs:	true
-URxvt*color11:	rgb:ff/f7/96
-URxvt*color15:	rgb:ff/ff/ff
-URxvt*color2:	rgb:ae/ce/92
-URxvt*color6:	rgb:41/81/79
-URxvt*color4:	rgb:41/41/71
-URxvt*color0:	rgb:00/00/00
-URxvt*font:	xft:Terminus:pixelsize=14:antialias=false
-URxvt*termName:	rxvt-256color
 URxvt*transparent:	true
-URxvt*scrollBar:	false
-URxvt*color10:	rgb:c5/f7/79
+urxvt*blurRadius: 6
+URxvt*shading:	20
+
+URxvt*background:	#000000
 URxvt*foreground:	#FFFFFF
-URxvt*color12:	rgb:41/86/be
+
+URxvt*color0:	rgb:00/00/00
+URxvt*color1:	rgb:9e/18/28
+URxvt*color2:	rgb:ae/ce/92
+URxvt*color4:	rgb:41/41/71
+URxvt*color5:	rgb:96/3c/59
+URxvt*color6:	rgb:41/81/79
+URxvt*color7:	rgb:be/be/be
 URxvt*color8:	rgb:66/66/66
+URxvt*color9:	rgb:cf/61/71
+URxvt*color10:	rgb:c5/f7/79
+URxvt*color11:	rgb:ff/f7/96
+URxvt*color12:	rgb:41/86/be
+URxvt*color13:	rgb:cf/9e/be
 URxvt*color14:	rgb:71/be/be
+URxvt*color15:	rgb:ff/ff/ff
+
+URxvt*termName:	rxvt-256color
+URxvt*scrollBar:	false
+URxvt*saveLines: 6000
 URxvt*urlLauncher:	firefox
 URxvt*perl-ext-common:	default,matcher
+
 URxvt*fading:	20
-URxvt*color5:	rgb:96/3c/59
-URxvt*color1:	rgb:9e/18/28
+
 xrenoise.use_xcursors:	1
 xrenoise.display:	:0
 xrenoise.display_resource:	0x00,0x04,0x45,0x74,0xEF,0xED,0xDC,0x88

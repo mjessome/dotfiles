@@ -1,5 +1,6 @@
 update_interval 0.5
-font -artwiz-lime-*-r-normal-*-*-*-*-*-*-*-iso8859-1
+#font -artwiz-lime-*-r-normal-*-*-*-*-*-*-*-iso8859-1
+font -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
 background yes
 own_window yes
 own_window_type override
@@ -50,10 +51,8 @@ ${membar 8,12 } \
 ${color lightgrey}Swap${color white} ${swapbar 8,12} \
 :: ${color lightgrey}Root${color white} ${fs_bar 8,12 /} \
 ${color lightgrey}Media${color white} ${fs_bar 8,12 /mnt/media} \
-${if_up wlan0}\
-:: ${color #c8ff63}${addr wlan0} ${downspeed wlan0}/s - ${upspeed wlan0}/s \
-${color white}\
-${endif}\
+:: ${color #c8ff63}${addrs} ${color white}\
 ${if_match "${mpd_status}" == "Playing"}\
-:: ${color orange}${mpd_smart}\
+:: ${color orange}${mpd_smart} ${mpd_bar 8,75} \
+${mpd_bitrate} kbps\
 ${endif}\

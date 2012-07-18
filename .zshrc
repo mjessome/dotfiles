@@ -1,4 +1,4 @@
-[ -z "$PS1" ] && return
+[ -z "$PROMPT" ] && return
 
 export EDITOR='vim'
 
@@ -160,6 +160,9 @@ function mkcd() {
         cd "$1"
     fi
 }
+function hist_most() {
+    fhist | awk '{print $4}' | sort | uniq -c | sort -rn | head -10
+}
 # start, stop, restart, reload - simple daemon management
 ## usage: start <daemon-name>
 ## from cinderwick.ca/files/configs/bashrc
@@ -200,13 +203,15 @@ autoload -U colors && colors
 setopt PROMPT_SUBST
 fpath+=~/.zsh/functions
 autoload -U ~/.zsh/functions/*(:t)
+source ~/.zsh/functions/notes_zsh
+
 # get git-completion.bash from the git source distribution
 source /usr/local/bin/git-completion.bash
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 # colour username blue for zsh, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
-PROMPT=$'[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
+PROMPT=$'$(Ndisp)[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
 ###########################
