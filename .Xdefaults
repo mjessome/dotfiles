@@ -1,3 +1,4 @@
+! xrdb ~/.Xdefaults to reload
 URxvt*font:	xft:Terminus:pixelsize=14:antialias=false
 URxvt*boldFont:	xft:Terminus:bold:pixelsize=14:antialias=false
 URxvt*underlineURLs:	true
@@ -38,7 +39,5 @@ URxvt*perl-ext-common:	default,matcher
 
 URxvt*fading:	20
 
-xrenoise.use_xcursors:	1
-xrenoise.display:	:0
-xrenoise.display_resource:	0x00,0x04,0x45,0x74,0xEF,0xED,0xDC,0x88
-xrenoise.executable_path:	/home/marc/build/Renoise_2_7_2_Demo_x86_64/renoise
+Xcursor.theme: redglass
+
