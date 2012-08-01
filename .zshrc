@@ -3,7 +3,6 @@
 export EDITOR='vim'
 
 unsetopt beep # turn of system beep
-bindkey -v  # use vim keybindings
 
 # remove the need for ""s around urls in commands.
 autoload -U url-quote-magic
@@ -219,6 +218,9 @@ PROMPT=$'$(Ndisp)[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m
 ###########################
 #       KEYBINDINGS       #
 ###########################
+bindkey -v  # use vim insert keybindings
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
 bindkey '^?' backward-delete-char
 bindkey "\e[1~" beginning-of-line # Home for xterm
 bindkey "\e[4~" end-of-line # End for rxvt
