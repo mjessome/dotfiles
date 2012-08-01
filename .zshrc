@@ -112,6 +112,7 @@ alias :q='exit'
 alias grep='grep --color'
 alias szsh='source ~/.zshrc'
 alias fhist='fc -il 1'
+alias atclr='atq | awk "{print \$1}" | xargs atrm'
 
 ### common typos ###
 alias gti='git'
