@@ -1,0 +1,26 @@
+#! /bin/zsh
+
+# use at daemon to set an alarm
+# usage: alrm <start_time> <interval> <num_times>
+#   start_time: first time to go off (eg. 10am)
+#   interval: interval in minutes
+#   num_times: number of times to repeat
+
+alarm() {
+    if [[ $# -ne 3 ]]; then
+        echo "Use at daemon to set an alarm"
+        echo "usage: alarm <start_time> <interval> <num_times>"
+        echo "  start_time: first time to go off (eg. 10am)"
+        echo "  interval: interval in minutes"
+        echo "  num_times: number of times to repeat"
+        exit 1
+    fi
+    echo "Setting alarm for $1, $3 times every $2 minutes."
+
+    for i in {0..$(($3 - 1))}; do
+        (( time = $2 * $i ))
+        echo "at $1 +${time}"
+        echo "mpc play" | at $1 +${time} minutes 2> /dev/null
+    done
+}
+

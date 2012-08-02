@@ -205,6 +205,7 @@ setopt PROMPT_SUBST
 fpath+=~/.zsh/functions
 autoload -U ~/.zsh/functions/*(:t)
 source ~/.zsh/functions/notes_zsh
+source ~/.zsh/functions/alarm
 
 # get git-completion.bash from the git source distribution
 source /usr/local/bin/git-completion.bash
