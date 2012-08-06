@@ -20,7 +20,7 @@ alarm() {
     for i in {0..$(($3 - 1))}; do
         (( time = $2 * $i ))
         echo "at $1 +${time}"
-        echo "mpc play" | at $1 +${time} minutes 2> /dev/null
+        echo "mpc play\namixer -c 0 set Master 100% unmute" | at $1 +${time} minutes 2> /dev/null
     done
 }
 
