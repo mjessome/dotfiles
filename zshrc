@@ -121,6 +121,8 @@ alias cd..='cd ../'
 alias html2pdf='wkhtmltopdf'
 alias vdiff='vimdiff'
 alias vi='vim'
+alias rm='trsh.pl'
+alias RM='/bin/rm'
 
 ### programming ###
 alias vgrind='valgrind --leak-check=yes --show-reachable=yes'
