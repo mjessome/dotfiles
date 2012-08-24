@@ -1,3 +1,31 @@
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
 # Check for an interactive session
 [ -z "$PS1" ] && return
 PS1='[\u@\e[1;33m\]\h\e[0m\] \W]\$ '
@@ -5,6 +33,7 @@ if [ -r /etc/bash_completion ]; then
     source /etc/bash_completion.d/git-completion.bash
     PS1='[\u@\e[1;32m\]\h\e[0m\] \W$(__git_ps1 " \e[1;35m\](%s)\e[0m\]")]\]\n$ '
 fi
+
 
 ### sudo shortcuts ###
 alias halt='sudo halt'
