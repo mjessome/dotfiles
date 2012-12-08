@@ -10,7 +10,8 @@ URxvt*borderLess:	false
 URxvt*color3:	rgb:96/8a/38
 URxvt*transparent:	true
 urxvt*blurRadius: 6
-URxvt*shading:	20
+URxvt*shading:	10
+URxvt*fading:	10
 
 URxvt*background:	#000000
 URxvt*foreground:	#FFFFFF
@@ -33,11 +34,11 @@ URxvt*color15:	rgb:ff/ff/ff
 
 URxvt*termName:	rxvt-256color
 URxvt*scrollBar:	false
-URxvt*saveLines: 6000
+URxvt*saveLines: 20000
 URxvt*urlLauncher:	firefox
 URxvt*perl-ext-common:	default,matcher
 
-URxvt*fading:	20
-
 Xcursor.theme: redglass
 
+Xft.rgba: none
+Xft.lcdfilter: lcdnone
