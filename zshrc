@@ -243,4 +243,25 @@ bindkey "\e[Z" reverse-menu-complete # Shift+Tab
 # Only past commands matching current input are searched
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
+bindkey "^R" history-incremental-search-backward
 
+# Change cursor to red when in command mode
+zle-keymap-select () {
+    if [ $TERM = "linux" ]; then
+        return;
+    fi
+    if [ $KEYMAP = vicmd ]; then
+        echo -ne "\033]12;Red\007"
+    else
+        echo -ne "\033]12;Grey\007"
+    fi
+}
+zle -N zle-keymap-select
+zle-line-init () {
+    if [ $TERM = "linux" ]; then
+        return
+    fi
+    zle -K viins
+    echo -ne "\033]12;Grey\007"
+}
+zle -N zle-line-init
