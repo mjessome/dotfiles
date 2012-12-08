@@ -2,12 +2,16 @@
 
 __set_notes_var() {
     if [[ ! -n $NOTES ]]; then
-        NOTES=/mnt/mvol/prompt_notes
+        NOTES=/tmp/prompt_notes
     fi
 }
 
 Ndisp() {
     __set_notes_var
+
+    if [[ ! -z $LNOTE ]]; then
+        echo -e "%{$bg_bold[blue]%}$LNOTE\n%{$reset_color%}"
+    fi
 
     if [[ ! -f $NOTES ]]; then
         return
@@ -18,6 +22,7 @@ Ndisp() {
         [[ -z "$i" ]] || print "$i"
     done
     print "%{$reset_color%}"
+
 }
 
 Npush() {
