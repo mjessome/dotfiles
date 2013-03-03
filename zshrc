@@ -104,6 +104,7 @@ alias mkdir='mkdir -p'
 alias stat='stat -sn'
 
 ### command shortening ###
+alias cls='clear'
 alias lsa='ls -a'
 alias lla='ls -la'
 alias lsl='ls -l'
@@ -112,10 +113,22 @@ alias grep='grep --color'
 alias szsh='source ~/.zshrc'
 alias fhist='fc -il 1'
 alias atclr='atq | awk "{print \$1}" | xargs atrm'
+alias webserv='python -m SimpleHTTPServer'
+alias env='env | sort'
+alias bgd='bg && disown'
+alias igrep='grep -i'
+alias igr='igrep'
+alias vgrep='grep -v'
+alias vgr='vgrep'
+alias ivgrep='grep -iv'
+alias vigrep='ivgrep'
+alias cdu='cdup'
+alias ncm='ncmpcpp'
 
 ### common typos ###
 alias gti='git'
 alias cd..='cd ../'
+alias cud='cdu'
 
 ### application renaming ###
 alias html2pdf='wkhtmltopdf'
@@ -165,6 +178,19 @@ function mkcd() {
 }
 function hist_most() {
     fhist | awk '{print $4}' | sort | uniq -c | sort -rn | head -10
+}
+function cl() {
+    cd $1 && ls
+}
+function cpln() {
+    head -n $1 $2 | tail -n 1 | xclip
+}
+function define() {
+    curl dict://dict.org/d:$1
+}
+function hl() {
+    # hilight the given word
+    grep --color "$1\|"
 }
 # start, stop, restart, reload - simple daemon management
 ## usage: start <daemon-name>
@@ -245,4 +271,25 @@ bindkey "\e[Z" reverse-menu-complete # Shift+Tab
 # Only past commands matching current input are searched
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
+bindkey "^R" history-incremental-search-backward
 
+# Change cursor to red when in command mode
+zle-keymap-select () {
+    if [ $TERM = "linux" ]; then
+        return;
+    fi
+    if [ $KEYMAP = vicmd ]; then
+        echo -ne "\033]12;Red\007"
+    else
+        echo -ne "\033]12;Grey\007"
+    fi
+}
+zle -N zle-keymap-select
+zle-line-init () {
+    if [ $TERM = "linux" ]; then
+        return
+    fi
+    zle -K viins
+    echo -ne "\033]12;Grey\007"
+}
+zle -N zle-line-init

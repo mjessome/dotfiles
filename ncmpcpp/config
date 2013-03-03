@@ -226,7 +226,7 @@ song_window_title_format = "ncmpcpp: {%a - }{%t}|{%f}"
 ##   not available.
 ##
 #
-#song_columns_list_format = "(7f)[green]{l} (25)[cyan]{a} (40)[]{t|f} (30)[red]{b}"
+song_columns_list_format = "(7f)[green]{l} (4)[]{n: }r (40)[]{t|f:Title} (25)[cyan]{a|A:Artist} (30)[red]{b}"
 #
 ##### various settings #####
 #
@@ -239,7 +239,7 @@ song_window_title_format = "ncmpcpp: {%a - }{%t}|{%f}"
 ##
 execute_on_song_change = ""
 #
-#playlist_show_remaining_time = "no"
+playlist_show_remaining_time = "yes"
 #
 playlist_shorten_total_times = "yes"
 #
@@ -313,7 +313,7 @@ media_library_left_column = "a" (possible values: a,y,g,c,p, legend above)
 #
 #show_hidden_files_in_local_browser = "no"
 #
-display_screens_numbers_on_start = "no"
+#display_screens_numbers_on_start = "no"
 #
 ##
 ## How shall key_screen_switcher work?
@@ -382,7 +382,7 @@ empty_tag_marker = "<empty>"
 #
 #media_library_display_empty_tag = "yes"
 #
-media_library_disable_two_column_mode = "no"
+#media_library_disable_two_column_mode = "no"
 #
 #enable_window_title = "yes"
 #

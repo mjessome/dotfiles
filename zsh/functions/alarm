@@ -13,14 +13,14 @@ alarm() {
         echo "  start_time: first time to go off (eg. 10am)"
         echo "  interval: interval in minutes"
         echo "  num_times: number of times to repeat"
-        exit 1
+        return
     fi
     echo "Setting alarm for $1, $3 times every $2 minutes."
 
     for i in {0..$(($3 - 1))}; do
         (( time = $2 * $i ))
         echo "at $1 +${time}"
-        echo "mpc play\namixer -c 0 set Master 100% unmute" | at $1 +${time} minutes 2> /dev/null
+        echo "ncmpcpp play" | at $1 +${time} minutes 2> /dev/null
     done
 }
 
