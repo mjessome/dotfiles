@@ -56,6 +56,9 @@ zstyle ':completion:*' squeeze-slashes true
 # Colours on completion
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+setopt correct
+# case-insensitive (all),partial-word and then substring completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 #######################
 #       HISTORY       #
