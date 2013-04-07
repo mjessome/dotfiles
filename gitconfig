@@ -8,6 +8,10 @@
     lg = log --stat --decorate
     lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     merget = mergetool
+    pul = pull
+    commi = commit
+    comm = commit
+    com = commit
 [color]
 	branch = auto
 	diff = auto
