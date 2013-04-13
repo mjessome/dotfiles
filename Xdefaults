@@ -38,6 +38,11 @@ URxvt*saveLines: 20000
 URxvt*urlLauncher:	firefox
 URxvt*perl-ext-common:	default,matcher
 
+! Make it easier to follow large amounts of output
+URxvt.scrollTtyOutput: false
+URxvt.scrollTtyKeyPress: true
+URxvt.scrollWithBuffer: true
+
 Xcursor.theme: redglass
 
 Xft.rgba: none
