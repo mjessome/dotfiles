@@ -16,9 +16,6 @@
 [submodule "vim/bundle/rainbow_parentheses"]
 	path = vim/bundle/rainbow_parentheses
 	url = https://github.com/kien/rainbow_parentheses.vim.git
-[submodule "vim/bundle/syntastic"]
-	path = vim/bundle/syntastic
-	url = https://github.com/scrooloose/syntastic.git
 [submodule "vim/bundle/vim-localvimrc"]
 	path = vim/bundle/vim-localvimrc
 	url = https://github.com/embear/vim-localvimrc.git
@@ -31,3 +28,6 @@
 [submodule "vim/bundle/file-line"]
 	path = vim/bundle/file-line
 	url = https://github.com/bogado/file-line.git
+[submodule "vim/bundle/clang_complete"]
+	path = vim/bundle/clang_complete
+	url = https://github.com/Rip-Rip/clang_complete.git
