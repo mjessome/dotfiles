@@ -203,24 +203,24 @@ function hl() {
 ## usage: start <daemon-name>
 ## from cinderwick.ca/files/configs/bashrc
 start() {
-        for arg in $*; do
-                sudo /etc/rc.d/$arg start
-        done
+    for arg in $*; do
+        sudo /etc/rc.d/$arg start
+    done
 }
 stop() {
-        for arg in $*; do
-                sudo /etc/rc.d/$arg stop
-        done
+    for arg in $*; do
+        sudo /etc/rc.d/$arg stop
+    done
 }
 restart() {
-        for arg in $*; do
-                sudo /etc/rc.d/$arg restart
-        done
+    for arg in $*; do
+        sudo /etc/rc.d/$arg restart
+    done
 }
 reload() {
-        for arg in $*; do
-                sudo /etc/rc.d/$arg reload
-        done
+    for arg in $*; do
+        sudo /etc/rc.d/$arg reload
+    done
 }
 # When directory is changed set xterm title to host:dir
 chpwd() {
