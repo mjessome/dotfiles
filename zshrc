@@ -193,7 +193,11 @@ function define() {
 }
 function hl() {
     # hilight the given word
-    grep --color "$1\|"
+    hlstr=""
+    for arg in $@; do
+        hlstr+="$arg\|"
+    done
+    grep --color=always -i $hlstr
 }
 # start, stop, restart, reload - simple daemon management
 ## usage: start <daemon-name>
