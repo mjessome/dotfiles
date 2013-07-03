@@ -37,8 +37,7 @@ function cdup {
   fi
 
   dir="$1"
-  old=`pwd`
-
+  old=`pwd|sed 's/\(.*\)\/\(.*\)/\1/'`
   # Try matching the full segment in path name
   new=`perl -pe "s{(.*/\Q$dir\E)(?=/|$).*?$}{\1};" <<< $old`
 
