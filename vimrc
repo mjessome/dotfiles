@@ -97,16 +97,18 @@ nnoremap <leader>a :Ack
 " Status Line
 set laststatus=2
 set statusline=                              " clear the status line
-set statusline=%-3.3n                        " buffer number
-set statusline+=%f%m%r%h\                    " file info
-set statusline+=[%{&ff}]\ \ \ \              " file formatting
-set statusline+=%#warningmsg#
+set statusline+=%-3.3n\                      " buffer number
+set statusline+=%t\                          " filename/read-only
+set statusline+=%#RedBacked#%r%*
+set statusline+=%#Modified#%m%*\ 
+set statusline+=(%l/%L,\ %c)\ %P             " (line/lines, col) %intoFile
+set statusline+=\ 
+set statusline+=%#WarningMsg#
 set statusline+=%{fugitive#statusline()}
 set statusline+=%*
 set statusline+=%=                           " align right
-set statusline+=%b,0x%-8B\                   " current char
-set statusline+=%-14.(%l,%c%V%)\             " offset
-set statusline+=%<%P\                        " percentage scrolled into file
+set statusline+=%h%w                         " help, preview window?
+set statusline+=%<%y\ [%{&encoding}:%{&fileformat}] " filetype, [encode:format]
 
 " Gitv
 let g:Gitv_TruncateCommitSubjects=1
