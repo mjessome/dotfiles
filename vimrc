@@ -65,6 +65,8 @@ colorscheme zenburn
 set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
 
+autocmd InsertLeave * if &diff|diffupdate|endif
+
 " ----------------------------------------------------------------------------
 " Plugin Settings
 " ----------------------------------------------------------------------------
