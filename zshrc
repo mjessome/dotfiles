@@ -243,14 +243,17 @@ fpath+=~/.zsh/functions
 autoload -U ~/.zsh/functions/*(:t)
 source ~/.zsh/functions/notes_zsh
 source ~/.zsh/functions/alarm
+source ~/.zsh/functions/gu
 
 # get git-completion.bash from the git source distribution
-source /usr/local/bin/git-completion.bash
+source ~/.zsh/functions/git-prompt.sh
+fpath=(~/.zsh/completion $fpath)
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
+export GIT_PS1_SHOWUPSTREAM="verbose"
 # colour username blue for zsh, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
-PROMPT=$'$(Ndisp)[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %1d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
+PROMPT=$'$(Ndisp)%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
 ###########################
