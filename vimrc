@@ -43,6 +43,7 @@ set showcmd             " Show (partial) command in status line
 set ruler               " Show line & column number
 set nolazyredraw
 set whichwrap+=<,>,h,l  " arrow keys wrap around line
+set wildmode=longest:full
 set wildmenu            " For easier tab completion on command line
 set ttyfast
 set laststatus=2
