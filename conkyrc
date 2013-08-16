@@ -5,28 +5,4 @@ use_spacer none
 out_to_console yes
 
 TEXT
-${if_match ${cpu cpu1} >= 75}^fg(\#fda53c)${endif}\
-${cpu cpu1}% \
-${if_match ${cpu cpu2} >= 75}^fg(\#fda53c)${endif}\
-${cpu cpu2}% \
-${if_match ${cpu cpu3} >= 75}^fg(\#fda53c)${endif}\
-${cpu cpu3}% \
-${if_match ${cpu cpu4} >= 75}^fg(\#fda53c)${endif}\
-${cpu cpu4}%\
- ::
-${memperc}%\
- ::
- /home ${fs_used_perc /home}%\
- /media ${fs_used_perc /mnt/media}%\
-${if_mpd_playing}\
- :: ê ${mpd_smart}\
-${if_match "${mpd_status}" == "Playing"}\
- æ\
-${else}\
-${if_match "${mpd_status}" == "Paused"}\
- ç\
-${endif}\
- ${mpd_elapsed}/${mpd_length}\
-${endif}\
-${endif}\
- :: ${time %c}
+${if_mpd_playing}${mpd_smart} :: ${endif}CPU ${cpu cpu1}% ${cpu cpu2}% ${cpu cpu3}% ${cpu cpu4}% ${cpu cpu5}% ${cpu cpu6}% ${cpu cpu7}% ${cpu cpu8}% :: MEM ${memperc}% :: ${time %a %b %d %I:%M%P}
