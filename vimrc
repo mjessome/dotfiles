@@ -67,6 +67,15 @@ set matchtime=1         " How many 10ths of a second to show the match for
 " ----------------------------------------------------------------------------
 " Plugin Settings
 " ----------------------------------------------------------------------------
+" clang_complete
+let g:clang_library_path='/usr/local/lib'
+let g:clang_snippets=1
+let g:clang_close_preview=1
+let g:clang_complete_auto=1
+set completeopt+=longest
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+inoremap <expr> <C-x><C-i> "\<C-x>\<C-u>"
+
 " Tagbar
 cmap tagb TagbarToggle
 let Tlist_WinWidth=40
@@ -89,7 +98,6 @@ set statusline=%-3.3n                        " buffer number
 set statusline+=%f%m%r%h\                    " file info
 set statusline+=[%{&ff}]\ \ \ \              " file formatting
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%{fugitive#statusline()}
 set statusline+=%*
 set statusline+=%=                           " align right
