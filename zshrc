@@ -66,7 +66,7 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 HISTFILE=~/.zhistory
 HISTSIZE=10000
 SAVEHIST=10000
-setopt incappendhistory 
+setopt incappendhistory
 setopt extendedhistory
 setopt hist_ignore_space
 setopt hist_reduce_blanks
@@ -137,8 +137,6 @@ alias cud='cdu'
 alias html2pdf='wkhtmltopdf'
 alias vdiff='vimdiff'
 alias vi='vim'
-alias rm='trsh.pl'
-alias RM='/bin/rm'
 
 ### programming ###
 alias vgrind='valgrind --leak-check=yes --show-reachable=yes'
