@@ -43,7 +43,5 @@ URxvt.scrollTtyOutput: false
 URxvt.scrollTtyKeyPress: true
 URxvt.scrollWithBuffer: true
 
-Xcursor.theme: redglass
-
 Xft.rgba: none
 Xft.lcdfilter: lcdnone
