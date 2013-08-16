@@ -87,12 +87,14 @@ let g:tagbar_autofocus = 1
 
 " Local vimrc loading
 let g:localvimrc_ask=0
+let g:localvimrc_sandbox=0
 
 " Gitv
 let g:Gitv_TruncateCommitSubjects=1
 
 " Ack
 nnoremap <leader>a :Ack 
+let g:ackprg="ag --nocolor --nogroup --column"
 
 " Status Line
 set laststatus=2
