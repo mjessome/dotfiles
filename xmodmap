@@ -1,11 +1,10 @@
 ! Remove lock and capslock feature
 ! map capslock to control
 remove Lock         = Caps_Lock
-keysym Caps_Lock    = Control_L
-add Control         = Control_L
+keysym Caps_Lock    = BackSpace
 
-clear Mod1
-clear Mod4
-add Mod1    = Super_L Alt_R
-add Mod4    = Alt_L Super_R
+!clear Mod1
+!clear Mod4
+!add Mod1    = Super_L Alt_R
+!add Mod4    = Alt_L Super_R
 
