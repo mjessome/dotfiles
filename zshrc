@@ -134,6 +134,7 @@ alias cd..='cd ../'
 alias cud='cdu'
 
 ### application renaming ###
+alias ack='ag'
 alias html2pdf='wkhtmltopdf'
 alias vdiff='vimdiff'
 alias vi='vim'
@@ -151,6 +152,9 @@ alias -g ....='../../../'
 alias -g .....='../../../..'
 alias -g V='| vim -'
 alias -g VIM='| vim -'
+
+#### ignore in history ###
+alias fg=' fg'
 
 #########################
 #       FUNCTIONS       #
