@@ -97,22 +97,30 @@ alias -s cc='${EDITOR}'
 alias -s h='${EDITOR}'
 alias -s txt='${EDITOR}'
 alias -s rc='${EDITOR}'
+alias -s md='$(EDITOR)'
 alias -s pdf='zathura'
 
 ### default options ###
-alias ls='ls --color'
-alias history='history -i'
+alias ag='ag --ignore tags --ignore "cscope.*"'
 alias df='df -h'
+alias grep='grep --color -I'
+alias history='history -i'
+alias ls='ls --color'
 alias mkdir='mkdir -p'
 alias stat='stat -sn'
+alias tmux='tmux -2'
 
 ### command shortening ###
+alias :q='exit'
+alias ,e='vim'
+alias :e='vim'
+alias cdu='cdup'
 alias cls='clear'
+alias csc='cscope'
+alias cscd='csc -d'
 alias lsa='ls -a'
 alias lla='ls -la'
 alias lsl='ls -l'
-alias :q='exit'
-alias grep='grep --color'
 alias szsh='source ~/.zshrc'
 alias fhist='fc -il 1'
 alias atclr='atq | awk "{print \$1}" | xargs atrm'
@@ -125,13 +133,13 @@ alias vgrep='grep -v'
 alias vgr='vgrep'
 alias ivgrep='grep -iv'
 alias vigrep='ivgrep'
-alias cdu='cdup'
 alias ncm='ncmpcpp'
 
 ### common typos ###
 alias gti='git'
 alias cd..='cd ../'
 alias cud='cdu'
+alias find.='find .'
 
 ### application renaming ###
 alias ack='ag'
@@ -260,6 +268,8 @@ PROMPT=$'$(Ndisp)%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)[%*][%{$fg_bold[bl
 ###########################
 #       KEYBINDINGS       #
 ###########################
+export KEYTIMEOUT=1 # get rid of delay after pressing <ESC> to enter vi mode.
+
 bindkey -v  # use vim insert keybindings
 bindkey "^A" beginning-of-line
 bindkey "^E" end-of-line
