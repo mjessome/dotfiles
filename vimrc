@@ -79,6 +79,14 @@ set completeopt+=longest
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 inoremap <expr> <C-x><C-i> "\<C-x>\<C-u>"
 
+" CtrlP
+let g:ctrlp_working_path_mode = 'ra'
+set wildignore+=*/tmp/*,*.o,*.so,*.swp,*.zip,*.tar.gz,*.tgz,*.pyc
+let g:ctrlp_map = '<leader>e'
+let g:ctrlp_cmd = 'CtrlPMixed'
+"let g:ctrlp_regexp = 1
+nnoremap <leader>b :CtrlPBuffer<CR>
+
 " Tagbar
 cmap tagb TagbarToggle
 let Tlist_WinWidth=40
