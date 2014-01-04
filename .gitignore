@@ -3,4 +3,5 @@ vim/swp/
 vim/undo/
 vim/.VimballRecord
 vim/.netrwhist
-
+vim/doc/tags
+vim/bundle/histwin/doc/tags
