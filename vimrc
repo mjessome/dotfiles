@@ -93,6 +93,9 @@ let Tlist_WinWidth=40
 map <F8> :TagbarToggle<CR> :wincmd =<CR>
 let g:tagbar_autofocus = 1
 
+" NERDTree
+map <F9> :NERDTreeToggle<CR>
+
 " Local vimrc loading
 let g:localvimrc_ask=0
 let g:localvimrc_sandbox=0
