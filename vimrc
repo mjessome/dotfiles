@@ -48,6 +48,7 @@ set wildmode=longest:full
 set wildmenu            " For easier tab completion on command line
 set ttyfast
 set laststatus=2
+set number
 let mapleader=","
 
 " Mouse to be able to click on a really wide terminal
