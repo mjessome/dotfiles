@@ -244,6 +244,7 @@ autoload -U ~/.zsh/functions/*(:t)
 source ~/.zsh/functions/notes_zsh
 source ~/.zsh/functions/alarm
 source ~/.zsh/functions/gu
+source ~/.zsh/functions/marks
 
 # get git-completion.bash from the git source distribution
 source ~/.zsh/functions/git-prompt.sh
