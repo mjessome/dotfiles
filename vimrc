@@ -12,6 +12,7 @@ set encoding=utf-8
 
 " call pathogen to install plugins from .vim/bundle
 call pathogen#infect()
+Helptags
 
 autocmd! bufwritepost vimrc source ~/.vimrc
 " Write file as superuser
@@ -48,12 +49,18 @@ set wildmenu            " For easier tab completion on command line
 set ttyfast
 set laststatus=2
 let mapleader=","
+
+" Mouse to be able to click on a really wide terminal
+if has('mouse_sgr')
+    set ttymouse=sgr
+endif
+
 " Get rid of delay in command mode, for eg. <ESC>O
 set timeout timeoutlen=1000 ttimeoutlen=1000
 
 " Get rid of the F1 mapping to help
-:nmap <F1> <nop>
-:imap <F1> <nop>
+nmap <F1> <nop>
+imap <F1> <nop>
 
 " Colour Schemes
 set background=dark
@@ -66,6 +73,13 @@ set showmatch           " briefly jump to matching bracket upon bracket insert
 set matchtime=1         " How many 10ths of a second to show the match for
 
 autocmd InsertLeave * if &diff|diffupdate|endif
+
+set cursorline  " highlight current line
+nnoremap <silent><leader>c :set cursorline!<CR>
+nnoremap <silent><leader>C :set cursorcolumn!<CR>
+
+" Don't wait for return press when viewing a man page.
+nnoremap K :<c-u>exe "!man " (v:count == 0 ? '' : '-s ' . v:count . ' ') . shellescape(expand('<cword>')) <cr><cr>
 
 " ----------------------------------------------------------------------------
 " Plugin Settings
@@ -105,6 +119,7 @@ let g:Gitv_TruncateCommitSubjects=1
 
 " Ack
 nnoremap <leader>a :Ack 
+nnoremap <leader>A :tab<CR>:Ack 
 let g:ackprg="ag --nocolor --nogroup --column"
 
 " Status Line
@@ -123,18 +138,7 @@ set statusline+=%=                           " align right
 set statusline+=%h%w                         " help, preview window?
 set statusline+=%<%y\ [%{&encoding}:%{&fileformat}] " filetype, [encode:format]
 
-" Gitv
-let g:Gitv_TruncateCommitSubjects=1
-
-" Place a coloured column at textwidth
-if exists('+colorcolumn')
-    set colorcolumn=+0
-    highlight ColorColumn ctermbg=234
-endif
-
 syntax on               " Turn on syntax highlighting
-                        " This has to come after colorcolumn in order to
-                        " draw it.
 
 " Highlight bad formatting:
 "     * Portions of lines past 'textwidth', or defaults to 80
@@ -186,7 +190,6 @@ if exists('+colorcolumn')
     set colorcolumn=+0
     highlight ColorColumn ctermbg=234
 endif
-
 cmap cwd :lcd %:p:h<CR>
 map <leader>p :setlocal paste!<CR>
 
@@ -204,7 +207,7 @@ set hlsearch            " Highligh search matches
 set incsearch           " Show search matches as you type
 set ignorecase          " Ignore case in search patterns
 set smartcase           " Override ignorecase if pattern contains capitals
-nmap // :noh<CR>        " Remove search highlighting
+nmap <silent><leader>/ :noh<CR>        " Remove search highlighting
 
 " ----------------------------------------------------------------------------
 " Formatting
@@ -279,30 +282,39 @@ au FileType python inoremap <buffer> $i import
 " don't put comment leader in column 0 as caused by smartindent
 au FileType python inoremap # X<BS>#
 
+" wscript files are python files
+autocmd BufNewFile,BufRead */wscript set ft=python
+
+autocmd FileType python setlocal completeopt-=preview
+
 " ----------------------------------------------------------------------------
 " C/CPP FileTypes
 " ----------------------------------------------------------------------------
-au FileType c,cpp,cc,C,h setlocal number
 au FileType c,cpp,cc,C,h,hpp,s,asm call ToggleFormatMatching()
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F2> :call MakeWithCopen()<CR>
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F3> :cprev<CR>zz
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F4> :cnext<CR>zz
 
-au FileType c,cpp,cc,C,h,hpp inoremap <buffer> #in #include 
-au FileType c,cpp,cc,C,h,hpp inoremap <buffer> #def #define 
+fun! ShowFuncName()
+  let lnum = line(".")
+  let col = col(".")
+  echohl ModeMsg
+  echo getline(search("^[^ \t#/]\\{2}.*[^:]\s*$", 'bW'))
+  echohl None
+  call search("\\%" . lnum . "l" . "\\%" . col . "c")
+endfun
+au FileType c,cpp,cc,C,h,hpp,s,asm map <leader>f :call ShowFuncName() <CR>
 
 " ----------------------------------------------------------------------------
 " HTM/HTML/PHP FileTypes
 " ----------------------------------------------------------------------------
 au FileType html,htm,php,xml setlocal tabstop=2
 au FileType html,htm,php,xml setlocal shiftwidth=2
-au FileType html,htm,php,xml setlocal number
 au FileType html,htm,php,xml call ToggleFormatMatching()
 
 " ----------------------------------------------------------------------------
 " Vim FileType
 " ----------------------------------------------------------------------------
-au FileType vim setlocal number
 au FileType vim call ToggleFormatMatching()
 autocmd! bufwritepost .vimrc source ~/.vimrc
 
@@ -316,13 +328,11 @@ au FileType make call ToggleFormatMatching()
 " ----------------------------------------------------------------------------
 " Shell Script FileTypes
 " ----------------------------------------------------------------------------
-au FileType zsh,bash,sh setlocal number
 au FileType zsh,bash,sh call ToggleFormatMatching()
 
 " ----------------------------------------------------------------------------
 " Lisp-like FileTypes
 " ----------------------------------------------------------------------------
-au FileType lisp,scheme setlocal number
 au FileType lisp,scheme call ToggleFormatMatching()
 au FileType list,scheme :RainbowParenthesesToggleAll<CR>
 
@@ -348,4 +358,3 @@ function! MakeWithCopen()
         endif
     endfor
 endfunction
-
