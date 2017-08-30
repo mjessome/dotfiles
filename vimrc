@@ -6,29 +6,51 @@
 " multi-bytes characters support, for example CJK support:
 "set fileencodings=ucs-bom,utf-8,cp936,big5,euc-jp,euc-kr,gb18030,latin1
 
-" Use Vim settings rather than Vi settings
-set nocompatible
+
+" Plugins {{{
+call plug#begin('~/.vim/plugged')
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
+Plug 'scrooloose/nerdtree'
+Plug 'embear/vim-localvimrc'
+Plug 'tmhedberg/matchit'
+Plug 'bogado/file-line'
+Plug 'majutsushi/tagbar'
+Plug 'tomtom/tcomment_vim'
+Plug 'rust-lang/rust.vim'
+Plug 'derekwyatt/vim-fswitch'
+Plug 'machakann/vim-highlightedyank'
+Plug 'wellle/targets.vim'
+
+" ctrlp
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'mattn/ctrlp-register'
+Plug 'JazzCore/ctrlp-cmatcher', { 'do': './install.sh' }
+
+Plug 'mileszs/ack.vim', { 'on': 'Ack' }
+Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
+
+Plug 'racer-rust/vim-racer'
+
+"Themes
+Plug 'sjl/badwolf/'
+Plug 'tomasr/molokai'
+Plug 'romainl/Apprentice'
+Plug 'morhetz/gruvbox'
+Plug 'jacoborus/tender'
+Plug 'fcpg/vim-fahrenheit'
+Plug 'muellan/am-colors'
+call plug#end()
+" }}}
+
+" File Handling {{{
+" ----------------------------------------------------------------------------
 set encoding=utf-8
-
-" call pathogen to install plugins from .vim/bundle
-call pathogen#infect()
-Helptags
-
-autocmd! bufwritepost vimrc source ~/.vimrc
-" Write file as superuser
-cmap w!! %!sudo tee > /dev/null %
-filetype plugin on
-filetype indent on
-
-" For session saving
-" :mksession /path/to/file
-set sessionoptions=blank,buffers,curdir,folds,globals,help,localoptions,options,resize,tabpages,winsize,winpos
-
-" ----------------------------------------------------------------------------
-" File Handling
-" ----------------------------------------------------------------------------
 " Use a single swap directory
 set directory^=$HOME/.vim/swp/
+
 " Persistent undo dir
 try
     set undodir=~/.vim/undo
@@ -36,25 +58,40 @@ try
     set undofile
 endtry
 
-" ----------------------------------------------------------------------------
-" User Interface
-" ----------------------------------------------------------------------------
+" Write file as superuser
+cmap w!! %!sudo tee > /dev/null %
+
+" Relaod vimrc when writing to it
+autocmd! bufwritepost vimrc source ~/.vimrc
+
+filetype plugin on
+filetype indent on
+" }}}
+
+" User Interface {{{
+" ============================================================================ 
 set noerrorbells        " don't make noise
 set showcmd             " Show (partial) command in status line
 set ruler               " Show line & column number
 set nolazyredraw
 set whichwrap+=<,>,h,l  " arrow keys wrap around line
-set wildmode=longest:full
+set wildmode=list:longest:full
 set wildmenu            " For easier tab completion on command line
 set ttyfast
 set laststatus=2
 set number
-let mapleader=","
+"let mapleader=" "
+map <space> <leader>
+set breakindent         " Wrapped lines will preserve indent
 
 " Mouse to be able to click on a really wide terminal
-if has('mouse_sgr')
-    set ttymouse=sgr
+if !has('nvim')
+"set ttymouse=urxvt
 endif
+
+" Make tabs and trailing whitespace visible
+set list
+set listchars=tab:>·,trail:·,nbsp:⎵
 
 " Get rid of delay in command mode, for eg. <ESC>O
 set timeout timeoutlen=1000 ttimeoutlen=1000
@@ -63,15 +100,16 @@ set timeout timeoutlen=1000 ttimeoutlen=1000
 nmap <F1> <nop>
 imap <F1> <nop>
 
-" Colour Schemes
+" Colour Scheme Settings
 set background=dark
-set t_Co=256            "Set terminals to use 256, instead of 16 colors
 let g:zenburn_high_Contrast=1   " high contrast zenburn for dark bg
 let g:zenburn_force_dark_Background = 1
-colorscheme zenburn
+let g:hybrid_custom_term_colors = 1
+let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
+colorscheme hybrid
 
-set showmatch           " briefly jump to matching bracket upon bracket insert
-set matchtime=1         " How many 10ths of a second to show the match for
+set showmatch     " briefly jump to matching bracket upon bracket insert
+set matchtime=1   " How many 10ths of a second to show the match for
 
 autocmd InsertLeave * if &diff|diffupdate|endif
 
@@ -80,33 +118,82 @@ nnoremap <silent><leader>c :set cursorline!<CR>
 nnoremap <silent><leader>C :set cursorcolumn!<CR>
 
 " Don't wait for return press when viewing a man page.
-nnoremap K :<c-u>exe "!man " (v:count == 0 ? '' : '-s ' . v:count . ' ') . shellescape(expand('<cword>')) <cr><cr>
+if !has('nvim')
+  nnoremap K :<c-u>exe "!man " (v:count == 0 ? '' : '-s ' . v:count . ' ') . shellescape(expand('<cword>')) <cr><cr>
+endif
 
-" ----------------------------------------------------------------------------
-" Plugin Settings
+" }}}
+
+" Plugin Settings {{{
 " ----------------------------------------------------------------------------
 " clang_complete
-let g:clang_library_path='/usr/local/lib'
+"let g:clang_library_path='/usr/lib/llvm-3.4/lib'
+let s:clang_library_path='/Library/Developer/CommandLineTools/usr/lib'
+if isdirectory(s:clang_library_path)
+    let g:clang_library_path=s:clang_library_path
+endif
 let g:clang_snippets=1
 let g:clang_close_preview=1
 let g:clang_complete_auto=1
+let g:clang_use_library=1
+let g:clang_auto_user_options='compile_commands.json'
 set completeopt+=longest
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 inoremap <expr> <C-x><C-i> "\<C-x>\<C-u>"
 
+" vim-racer
+let g:racer_cmd = "/Users/marc.jessome/.cargo/bin/racer"
+let g:racer_experimental_completer = 1
+
+" Highlighted Yank
+let g:highlightedyank_highlight_duration = 300
+
+" Airline
+let g:airline_left_sep='▶'
+let g:airline_right_sep='◀'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
 " CtrlP
-let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_working_path_mode = 'rwa'
 set wildignore+=*/tmp/*,*.o,*.so,*.swp,*.zip,*.tar.gz,*.tgz,*.pyc
 let g:ctrlp_map = '<leader>e'
-let g:ctrlp_cmd = 'CtrlPMixed'
-"let g:ctrlp_regexp = 1
 nnoremap <leader>b :CtrlPBuffer<CR>
+if executable('rg') " Use Ripgrep
+  let g:ctrlp_user_command = 'rg %s -i
+        \ --color never
+        \ --no-heading
+        \ --hidden
+        \ --files
+        \ -j2
+        \ --no-messages
+        \ -g "!**/*.pyc"
+        \ -g "!.git"
+        \ -g "!.svn"
+        \ -g "!.hg"
+        \ -g "!.DS_Store"'
+elseif executable('ag') " Use the Silver Searcher
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+        \ --ignore .git
+        \ --ignore .svn
+        \ --ignore .hg
+        \ --ignore .DS_Store
+        \ --ignore "**/*.pyc"
+        \ -g ""'
+endif
+"let g:ctrlp_match_func = { 'match' : 'matcher#cmatch' }
 
 " Tagbar
-cmap tagb TagbarToggle
 let Tlist_WinWidth=40
 map <F8> :TagbarToggle<CR> :wincmd =<CR>
 let g:tagbar_autofocus = 1
+" Speed up cursor movement
+autocmd FileType tagbar setlocal nocursorline nocursorcolumn
+
+" Ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " NERDTree
 map <F9> :NERDTreeToggle<CR>
@@ -115,123 +202,93 @@ map <F9> :NERDTreeToggle<CR>
 let g:localvimrc_ask=0
 let g:localvimrc_sandbox=0
 
-" Gitv
-let g:Gitv_TruncateCommitSubjects=1
+" Fugitive
+command! Gadd :Git add %
+nnoremap <silent><leader>gb :Gblame<CR>
+nnoremap <silent><leader>gd :Gdiff<CR>
+nnoremap <silent><leader>gs :Gstatus<CR>
+nnoremap <silent><leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <silent><leader>ga :Gadd<CR>
 
 " Ack
 nnoremap <leader>a :Ack 
 nnoremap <leader>A :tab<CR>:Ack 
-let g:ackprg="ag --nocolor --nogroup --column"
+if executable('rg') " Use Ripgrep
+  let g:ackprg="rg --color never --smart-case --column --no-heading --no-messages -j2"
+elseif executable('ag') "Use the Silver Searcher
+  let g:ackprg="ag --nocolor --nogroup --column"
+endif
 
-" Status Line
-set laststatus=2
-set statusline=                              " clear the status line
-set statusline+=%-3.3n\                      " buffer number
-set statusline+=%t\                          " filename/read-only
-set statusline+=%#RedBacked#%r%*
-set statusline+=%#Modified#%m%*\ 
-set statusline+=(%l/%L,\ %c)\ %P             " (line/lines, col) %intoFile
-set statusline+=\ 
-set statusline+=%#WarningMsg#
-set statusline+=%{fugitive#statusline()}
-set statusline+=%*
-set statusline+=%=                           " align right
-set statusline+=%h%w                         " help, preview window?
-set statusline+=%<%y\ [%{&encoding}:%{&fileformat}] " filetype, [encode:format]
+" }}}
 
 syntax on               " Turn on syntax highlighting
 
-" Highlight bad formatting:
-"     * Portions of lines past 'textwidth', or defaults to 80
-"           (set g:long_line_m)
-"     * leading tabs    (set g:leading_tab_m)
-"     * Whitespace at end of line (set g:trailing_whitespace_m)
-highlight LongLine ctermbg=grey ctermfg=black guibg=#592929
-highlight LeadingTab ctermbg=grey ctermfg=white
-highlight TrailingWhitespace ctermbg=grey ctermfg=white
-function! ToggleFormatMatching()
-    if exists('w:format_match')
-        call clearmatches()
-        unlet w:format_match
-        if exists('w:long_line')
-            unlet w:long_line
-        endif
-        if exists('w:leading_tab')
-            unlet w:leading_tab
-        endif
-        if exists('w:trailing_whitespace')
-            unlet w:trailing_whitespace
-        endif
-    else
-        let w:format_match = 1
-        if g:long_line_m
-            if &textwidth > 0
-                let w:long_line = matchadd('LongLine', '\%'.&tw.'v.\+', -1)
-            else
-                let w:long_line = matchadd('LongLine', '\%80v.\+', -1)
-            endif
-        endif
-        if g:leading_tab_m
-            let w:leading_tab = matchadd('LeadingTab', '^\t\+', -1)
-        endif
-        if g:trailing_whitespace_m
-            let w:trailing_whitespace = matchadd('TrailingWhitespace', '\s\+$', -1)
-        endif
-    endif
-endfunction
-let g:long_line_m = 1
-let g:leading_tab_m = 1
-let g:trailing_whitespace_m = 1
-nnoremap <silent><leader>h :call ToggleFormatMatching()<CR>
+" Custom syntax highlighting support
+highlight CustomSyntax ctermfg=144
 
-" reselect just pasted text
-nnoremap <leader>v V`]
+" Note Highlight {{{
+" ----------------------------------------------------------------------------
+highlight NoteHL ctermbg=52 ctermfg=white
+function! EnableNoteHilights()
+  "if ! exists('b:note_hl')
+    "let b:note_hl = matchadd('NoteHL', '^.*\[MJ\].*$')
+  "endif
+endfunction
+" }}}
 
 if exists('+colorcolumn')
     set colorcolumn=+0
     highlight ColorColumn ctermbg=234
 endif
-cmap cwd :lcd %:p:h<CR>
-map <leader>p :setlocal paste!<CR>
 
-" Rainbow Parentheses
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
-au Syntax * RainbowParenthesesLoadChevrons
-map <leader>r :RainbowParenthesesToggleAll<CR>
+" Change directory to file's
+command! Cwd :lcd %:p:h<CR>
 
-" ----------------------------------------------------------------------------
-" Search
+" Copy & Paste
+map <leader>p "*p
+map <leader>P "*P
+
+" reselect just pasted text
+nnoremap <leader>v V`]
+
+" Search and Replace {{{
 " ----------------------------------------------------------------------------
 set hlsearch            " Highligh search matches
 set incsearch           " Show search matches as you type
 set ignorecase          " Ignore case in search patterns
 set smartcase           " Override ignorecase if pattern contains capitals
-nmap <silent><leader>/ :noh<CR>        " Remove search highlighting
 
+" Clear search highlight
+nnoremap <silent><leader>/ :noh<CR>
+highlight Search ctermfg=black ctermbg=174
+
+" nvim incremental / live substitute
+if has('nvim')
+  set inccommand=split
+endif
+
+" }}}
+
+" Default Formatting {{{
 " ----------------------------------------------------------------------------
-" Formatting
-" ----------------------------------------------------------------------------
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab           " Use spaces instead of tabs
 set smarttab
 set autoindent          " Copy indent from current line when starting new line
 set smartindent         " Smart indent on new line, works for C-like langs.
 set textwidth=80        " Set comment text width to 80 chars:
-set formatoptions=c,q,r         " c: Auto-wrap comments to textwidth
-                                " q: Allow formatting comments with "gq".
-                                " r: Automatically insert current comment char
+set formatoptions=tcqjr
+" }}}
 
-" ----------------------------------------------------------------------------
-"  Mouse & Keyboard
-" ----------------------------------------------------------------------------
+"  Mouse & Keyboard {{{
+" ============================================================================
 set mouse=a         " Enable the use of the mouse.
 set mousehide       " Hide the mouse while typing
 map <MouseMiddle> <esc>*p       " The mouse to paste unformatted block of code
 set backspace=indent,eol,start  " Influences the working of backspaces
 
+" Movement {{{
 " Get rid of arrow keys.
 nnoremap <Up> <nop>
 nnoremap <Down> <nop>
@@ -254,9 +311,11 @@ vnoremap <C-e> g_
 
 " quicker escaping
 inoremap jj <ESC>
+" }}}
 
-" ----------------------------------------------------------------------------
-" Tabs, Windows and Buffers
+" }}}
+
+" Tabs, Windows and Buffers {{{
 " ----------------------------------------------------------------------------
 set switchbuf=useopen
 " can have unwritten buffers in background
@@ -268,14 +327,17 @@ map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
+" }}}
 
+" Filetype Settings {{{
+" ============================================================================
+
+" Python FileType {{{
 " ----------------------------------------------------------------------------
-" Python FileType
-" ----------------------------------------------------------------------------
-" Change to width of 79
 au FileType python setlocal textwidth=79
+au FileType python setlocal shiftwidth=4
+au FileType python setlocal tabstop=4
 au FileType python setlocal number
-au FileType python call ToggleFormatMatching()
 
 au FileType python inoremap <buffer> $p print
 au FileType python inoremap <buffer> $i import
@@ -283,18 +345,19 @@ au FileType python inoremap <buffer> $i import
 " don't put comment leader in column 0 as caused by smartindent
 au FileType python inoremap # X<BS>#
 
+au FileType python setlocal completeopt-=preview
+au FileType python call EnableNoteHilights()
+
 " wscript files are python files
-autocmd BufNewFile,BufRead */wscript set ft=python
+au BufNewFile,BufRead */wscript set ft=python
+" }}}
 
-autocmd FileType python setlocal completeopt-=preview
-
+" C/C++ FileTypes {{{
 " ----------------------------------------------------------------------------
-" C/CPP FileTypes
-" ----------------------------------------------------------------------------
-au FileType c,cpp,cc,C,h,hpp,s,asm call ToggleFormatMatching()
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F2> :call MakeWithCopen()<CR>
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F3> :cprev<CR>zz
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F4> :cnext<CR>zz
+au FileType c,cpp,cc,C,h,hpp,s,asm call EnableNoteHilights()
 
 fun! ShowFuncName()
   let lnum = line(".")
@@ -304,58 +367,90 @@ fun! ShowFuncName()
   echohl None
   call search("\\%" . lnum . "l" . "\\%" . col . "c")
 endfun
-au FileType c,cpp,cc,C,h,hpp,s,asm map <leader>f :call ShowFuncName() <CR>
+au FileType c,cpp,cc,C,h,hpp,s,asm map <leader>f :call ShowFuncName()<CR>
+" }}}
 
-" ----------------------------------------------------------------------------
-" HTM/HTML/PHP FileTypes
+" HTM/HTML/PHP FileTypes {{{
 " ----------------------------------------------------------------------------
 au FileType html,htm,php,xml setlocal tabstop=2
 au FileType html,htm,php,xml setlocal shiftwidth=2
-au FileType html,htm,php,xml call ToggleFormatMatching()
+" }}}
 
+" Vim FileType {{{
 " ----------------------------------------------------------------------------
-" Vim FileType
-" ----------------------------------------------------------------------------
-au FileType vim call ToggleFormatMatching()
 autocmd! bufwritepost .vimrc source ~/.vimrc
+" }}}
 
-" ----------------------------------------------------------------------------
-" Makefile FileType
+" Makefile FileType {{{
 " ----------------------------------------------------------------------------
 au FileType make setlocal noexpandtab
 au FileType make let g:leading_tab_m=0
-au FileType make call ToggleFormatMatching()
+" }}}
 
+" Shell Script FileTypes {{{
 " ----------------------------------------------------------------------------
-" Shell Script FileTypes
-" ----------------------------------------------------------------------------
-au FileType zsh,bash,sh call ToggleFormatMatching()
+" }}}
 
+" Lisp-like FileTypes {{{
 " ----------------------------------------------------------------------------
-" Lisp-like FileTypes
+" }}}
+
+" SQL FileTypes {{{
 " ----------------------------------------------------------------------------
-au FileType lisp,scheme call ToggleFormatMatching()
-au FileType list,scheme :RainbowParenthesesToggleAll<CR>
+au BufNewFile,BufRead *.presto set filetype=sql
+" }}}
+
+""" }}}
 
 " Quickly toggle sequential & relative line numbering
 function! ToggleNumberMode()
-    if (&relativenumber && !&number)
+    if (&relativenumber)
         set number
-    elseif (&number && !&relativenumber)
+        set norelativenumber
+    elseif (!&relativenumber)
+        " leave number set so current line is numbered
         set relativenumber
     endif
 endfunction
-nnoremap <silent><leader>n :call  ToggleNumberMode()<CR>
+nnoremap <silent><leader>n :call ToggleNumberMode()<CR>
 
 function! MakeWithCopen()
     make!
     let qflist = getqflist()
     for e in qflist
         if e.valid
-            tabnew
-            copen
-            cc
+            if exists('w:build_window')
+                copen
+                cc
+            else
+                tabnew
+                let w:build_window=1
+                copen
+                cc
+            endif
             break
         endif
     endfor
 endfunction
+
+" Insert blank line above or below, remove any possible comment continuations
+nnoremap <leader>iO O<Esc>S<Esc>j
+nnoremap <leader>io o<Esc>S<Esc>k
+nnoremap <leader>ic o<Esc>S<Esc>80i/<Esc>yypO<Esc>S//
+
+" Cscope {{{
+if has("cscope")
+  set cscopetag
+  set cscopetagorder=0
+
+  command! Cr :cscope reset
+  command! -nargs=+ Cc :cscope find c <args>
+  command! -nargs=+ Cg :cscope find g <args>
+  command! -nargs=+ Ce :cscope find e <args>
+  command! -nargs=+ Cs :cscope find s <args>
+  command! -nargs=+ Cd :cscope find d <args>
+  command! -nargs=+ Ci :cscope find i <args>
+endif
+" }}}
+
+" vim:foldmethod=marker
