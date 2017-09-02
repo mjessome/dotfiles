@@ -64,8 +64,8 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 #       HISTORY       #
 #######################
 HISTFILE=~/.zhistory
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=50000
 setopt incappendhistory
 setopt extendedhistory
 setopt hist_ignore_space
@@ -90,6 +90,9 @@ alias yrts'yrt -S'
 alias yrtss='yrt -Ss'
 alias yrtq='yrt -Q|grep'
 
+### aptitude ###
+alias apt='aptitude'
+
 ### suffixes ###
 alias -s c='${EDITOR}'
 alias -s cpp='${EDITOR}'
@@ -101,11 +104,10 @@ alias -s md='$(EDITOR)'
 alias -s pdf='zathura'
 
 ### default options ###
-alias ag='ag --ignore tags --ignore "cscope.*"'
 alias df='df -h'
 alias grep='grep --color -I'
 alias history='history -i'
-alias ls='ls --color'
+alias ls='ls -G'
 alias mkdir='mkdir -p'
 alias stat='stat -sn'
 alias tmux='tmux -2'
@@ -141,15 +143,9 @@ alias cd..='cd ../'
 alias cud='cdu'
 alias find.='find .'
 
-### application renaming ###
-alias ack='ag'
-alias html2pdf='wkhtmltopdf'
-alias vdiff='vimdiff'
-alias vi='vim'
-
 ### programming ###
 alias vgrind='valgrind --leak-check=yes --show-reachable=yes'
-alias gdb='gdb -silent'
+#alias gdb='gdb -silent'
 
 ### global aliases ###
 alias -g G='| grep'
@@ -190,7 +186,7 @@ function mkcd() {
     fi
 }
 function hist_most() {
-    fhist | awk '{print $4}' | sort | uniq -c | sort -rn | head -10
+    fhist | awk '{print $4}' | sort | uniq -c | sort -rn | head -${1:=10}
 }
 function cl() {
     cd $1 && ls
@@ -247,22 +243,16 @@ chpwd() {
 autoload -U colors && colors
 # allow functions in the prompt
 setopt PROMPT_SUBST
-fpath+=~/.zsh/functions
-autoload -U ~/.zsh/functions/*(:t)
-source ~/.zsh/functions/notes_zsh
-source ~/.zsh/functions/alarm
-source ~/.zsh/functions/gu
-source ~/.zsh/functions/marks
+source ~/.zsh/completion/_invoke
 
-# get git-completion.bash from the git source distribution
-source ~/.zsh/functions/git-prompt.sh
-fpath=(~/.zsh/completion $fpath)
+fpath=(/usr/local/etc/bash_completion.d/* $fpath)
+source /usr/local/etc/bash_completion.d/git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUPSTREAM="verbose"
 # colour username blue for zsh, hostname green, vc_info
 # on successful command, green "$", otherwise red "[rc] $"
-PROMPT=$'$(Ndisp)%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)[%*][%{$fg_bold[blue]%}%n%{$reset_color%}@%{$fg_bold[green]%}%m%{$reset_color%} %d%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
+PROMPT=$'%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)[%*][%{$fg_bold[yellow]%}%n%{$reset_color%} %~%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
 %(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
 ###########################
@@ -326,3 +316,38 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
+if [ $TERM != "linux" ]; then
+  export TERM=screen-256color
+fi
+
+# Disable CTRL-S pause transmission.
+stty -ixon
+stty -ixoff
+
+# virtualenv
+export WORKON_HOME=$HOME/.virtualenvs
+source $(which virtualenvwrapper.sh)
+
+# virtualenv aliases
+# http://blog.doughellmann.com/2010/01/virtualenvwrapper-tips-and-tricks.html
+alias v='workon'
+alias v.deactivate='deactivate'
+alias v.mk='mkvirtualenv --no-site-packages'
+alias v.mk_withsitepackages='mkvirtualenv'
+alias v.rm='rmvirtualenv'
+alias v.switch='workon'
+alias v.add2virtualenv='add2virtualenv'
+alias v.cdsitepackages='cdsitepackages'
+alias v.cd='cdvirtualenv'
+alias v.lssitepackages='lssitepackages'
+
+[ -f ~/.zsh.secret ] && source ~/.zsh.secret
+[ -f ~/.zsh/fitbit ] && source ~/.zsh/fitbit
+
+export PATH=${HOME}/.cargo/bin:${PATH}
+export PATH=${HOME}/bin:${PATH}
+export PATH=/usr/local/bin:${PATH}:/usr/local/opt/go/libexec/bin
+
+gstats() {
+    git ls-files -z | xargs -0n1 git blame -w | perl -n -e '/^.*?\((.*?)\s+[\d]{4}/; print $1,"\n"' | sort -f | uniq -c | sort -nr
+}
