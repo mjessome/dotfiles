@@ -1,34 +1,31 @@
 [user]
-	name = Marc Jessome
-	email = marc.jessome@gmail.com
+  name = Marc Jessome
+  email = marc.jessome@gmail.com
+
 [alias]
-    di=diff -U8
-    d = difftool
-    co = checkout
-    lg = log --stat --decorate
-    lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-    merget = mergetool
-    pul = pull
-    commi = commit
-    comm = commit
-    com = commit
-[color]
-	branch = auto
-	diff = auto
-    interactive = auto
-	status = auto
+  amend = commit --amend
+  bra = branch -a
+  co = checkout
+  com = commit
+  commi = commit
+  di=diff -U8
+  lg = log --stat --decorate
+  lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  pul = pull
+  sdiff = diff --submodule=diff
+  su = submodule update --init --recursive
+
+  # open all merge conflicts in vim
+  resolve = "!git status -s | grep '^UU' | awk '{print $2}' | xargs -o vim"
+
 [apply]
-    whitespace = strip
+  whitespace = strip
+
 [core]
-    editor = vim
+  editor = vim
+
 [diff]
-    renames = true
-    tool = vimdiff
-[difftool]
-	prompt = false
-[merge]
-    tool = vimdiff3
-[mergetool "vimdiff3"]
-	cmd = vim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
+  renames = true
+
 [push]
-	default = simple
+  default = simple
