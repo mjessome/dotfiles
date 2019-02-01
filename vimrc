@@ -34,7 +34,7 @@ Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
 
 Plug 'racer-rust/vim-racer'
 
-"Themes
+" Themes
 Plug 'sjl/badwolf/'
 Plug 'tomasr/molokai'
 Plug 'romainl/Apprentice'
@@ -42,6 +42,7 @@ Plug 'morhetz/gruvbox'
 Plug 'jacoborus/tender'
 Plug 'fcpg/vim-fahrenheit'
 Plug 'muellan/am-colors'
+Plug 'KeitaNakamura/neodark.vim'
 call plug#end()
 " }}}
 
@@ -100,13 +101,16 @@ set timeout timeoutlen=1000 ttimeoutlen=1000
 nmap <F1> <nop>
 imap <F1> <nop>
 
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
 " Colour Scheme Settings
 set background=dark
-let g:zenburn_high_Contrast=1   " high contrast zenburn for dark bg
-let g:zenburn_force_dark_Background = 1
-let g:hybrid_custom_term_colors = 1
-let g:hybrid_reduced_contrast = 1 " Remove this line if using the default palette.
-colorscheme hybrid
+let g:neodark#background = '#3f3f3f'
+colorscheme neodark
 
 set showmatch     " briefly jump to matching bracket upon bracket insert
 set matchtime=1   " How many 10ths of a second to show the match for

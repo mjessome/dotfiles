@@ -316,10 +316,6 @@ export LESS_TERMCAP_so=$'\E[01;44;33m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-if [ $TERM != "linux" ]; then
-  export TERM=screen-256color
-fi
-
 # Disable CTRL-S pause transmission.
 stty -ixon
 stty -ixoff
@@ -350,4 +346,21 @@ export PATH=/usr/local/bin:${PATH}:/usr/local/opt/go/libexec/bin
 
 gstats() {
     git ls-files -z | xargs -0n1 git blame -w | perl -n -e '/^.*?\((.*?)\s+[\d]{4}/; print $1,"\n"' | sort -f | uniq -c | sort -nr
+}
+
+# test for truecolor support of terminal
+truecolor() {
+  awk 'BEGIN{
+      s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
+      for (colnum = 0; colnum<77; colnum++) {
+          r = 255-(colnum*255/76);
+          g = (colnum*510/76);
+          b = (colnum*255/76);
+          if (g>255) g = 510-g;
+          printf "\033[48;2;%d;%d;%dm", r,g,b;
+          printf "\033[38;2;%d;%d;%dm", 255-r,255-g,255-b;
+          printf "%s\033[0m", substr(s,colnum+1,1);
+      }
+      printf "\n";
+  }'
 }
