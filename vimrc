@@ -35,6 +35,7 @@ Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
 Plug 'racer-rust/vim-racer'
 
 " Themes
+Plug 'NLKNguyen/papercolor-theme'
 Plug 'sjl/badwolf/'
 Plug 'tomasr/molokai'
 Plug 'romainl/Apprentice'
@@ -109,8 +110,7 @@ endif
 
 " Colour Scheme Settings
 set background=dark
-let g:neodark#background = '#3f3f3f'
-colorscheme neodark
+colorscheme gruvbox
 
 set showmatch     " briefly jump to matching bracket upon bracket insert
 set matchtime=1   " How many 10ths of a second to show the match for
