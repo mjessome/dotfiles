@@ -96,7 +96,7 @@ set list
 set listchars=tab:>·,trail:·,nbsp:⎵
 
 " Get rid of delay in command mode, for eg. <ESC>O
-set timeout timeoutlen=1000 ttimeoutlen=1000
+set timeout timeoutlen=1000 ttimeoutlen=0
 
 " Get rid of the F1 mapping to help
 nmap <F1> <nop>
