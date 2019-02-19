@@ -378,7 +378,13 @@ au FileType html,htm,php,xml setlocal shiftwidth=2
 
 " Vim FileType {{{
 " ----------------------------------------------------------------------------
+if has('nvim')
+autocmd! bufwritepost vimrc source ~/.config/nvim/init.vim
+autocmd! bufwritepost init.vim source ~/.config/nvim/init.vim
+else
+autocmd! bufwritepost vimrc source ~/.vimrc
 autocmd! bufwritepost .vimrc source ~/.vimrc
+endif
 " }}}
 
 " Makefile FileType {{{
