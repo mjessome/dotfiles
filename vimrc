@@ -232,12 +232,8 @@ highlight CustomSyntax ctermfg=144
 
 " Note Highlight {{{
 " ----------------------------------------------------------------------------
-highlight NoteHL ctermbg=52 ctermfg=white
-function! EnableNoteHilights()
-  "if ! exists('b:note_hl')
-    "let b:note_hl = matchadd('NoteHL', '^.*\[MJ\].*$')
-  "endif
-endfunction
+highlight NoteHL guibg=darkred guifg=white ctermbg=52 ctermfg=white
+syntax match NoteHL "^.*\[MJ\].*$" containedin=ALL
 " }}}
 
 if exists('+colorcolumn')
@@ -246,14 +242,14 @@ if exists('+colorcolumn')
 endif
 
 " Change directory to file's
-command! Cwd :lcd %:p:h<CR>
+command! Cwd :lcd %:p:h
 
 " Copy & Paste
 map <leader>p "*p
 map <leader>P "*P
 
-" reselect just pasted text
-nnoremap <leader>v V`]
+" reselect previously changed / yanked text (eg. a paste)
+nnoremap <leader>v `[V`]
 
 " Search and Replace {{{
 " ----------------------------------------------------------------------------
