@@ -18,28 +18,19 @@ zstyle :compinstall filename '/home/marc/.zshrc'
 autoload -U zargs
 
 # report how long a command took above certain run time
-REPORTTIME=5
+REPORTTIME=1
 TIMEFMT="%U user %S system %P cpu %*Es total"
 
-# Prompt for confirmation after globbed rm
-# eg. 'rm *' or 'rm *.c'
-setopt RM_STAR_WAIT
-# dont pipe into existing files, need >!
-setopt NOCLOBBER
-# Background processes aren't killed on exit of shell
-setopt AUTO_CONTINUE
-# don't use 'nice' on bg processes
-setopt NO_BG_NICE
-# watch user logins/outs
-watch=notme
-LOGCHECK=60
+setopt RM_STAR_WAIT  # Prompt for confirmation after globbed rm
+setopt NOCLOBBER     # Don't pipe into existing files, need >!
+setopt AUTO_CONTINUE # Background processes aren't killed on exit of shell
+setopt NO_BG_NICE    # Don't use 'nice' on bg processes
 
 ##########################
 #       COMPLETION       #
 ##########################
-# case insensitive globbing
-setopt extendedglob
-unsetopt caseglob
+setopt extendedglob  # Extended globbing, allows regular expressions
+setopt nocaseglob    # Case insensitive Globbing
 # Write globbed files out
 autoload insert-files
 zle -N insert-files
@@ -59,13 +50,15 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 setopt correct
 # case-insensitive (all),partial-word and then substring completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# automatically find new executables in path
+zstyle ':completion:*' rehash true
 
 #######################
 #       HISTORY       #
 #######################
 HISTFILE=~/.zhistory
-HISTSIZE=100000
-SAVEHIST=50000
+HISTSIZE=50000
+SAVEHIST=100000
 setopt incappendhistory
 setopt extendedhistory
 setopt hist_ignore_space
@@ -74,7 +67,7 @@ setopt hist_reduce_blanks
 #######################
 #       ALIASES       #
 #######################
-### sudo shortcuts ###
+### sudo ###
 alias halt='sudo halt'
 alias reboot='sudo reboot'
 alias svim='sudo vim'
@@ -105,37 +98,27 @@ alias -s pdf='zathura'
 
 ### default options ###
 alias df='df -h'
+alias gdb='gdb --silent'
 alias grep='grep --color -I'
 alias history='history -i'
-alias ls='ls -G'
+alias ls='ls --color'
 alias mkdir='mkdir -p'
 alias stat='stat -sn'
 alias tmux='tmux -2'
 
 ### command shortening ###
 alias :q='exit'
-alias ,e='vim'
-alias :e='vim'
 alias cdu='cdup'
-alias cls='clear'
 alias csc='cscope'
-alias cscd='csc -d'
+alias emoj='emoji-fzf preview | fzf --preview "emoji-fzf get --name {1}" | cut -d " " -f 1 | emoji-fzf get | xclip'
 alias lsa='ls -a'
 alias lla='ls -la'
 alias lsl='ls -l'
-alias szsh='source ~/.zshrc'
 alias fhist='fc -il 1'
-alias atclr='atq | awk "{print \$1}" | xargs atrm'
-alias webserv='python -m SimpleHTTPServer'
+alias webserv='python3 -m http.server'
 alias env='env | sort'
-alias bgd='bg && disown'
 alias igrep='grep -i'
 alias igr='igrep'
-alias vgrep='grep -v'
-alias vgr='vgrep'
-alias ivgrep='grep -iv'
-alias vigrep='ivgrep'
-alias ncm='ncmpcpp'
 
 ### common typos ###
 alias gti='git'
@@ -145,7 +128,6 @@ alias find.='find .'
 
 ### programming ###
 alias vgrind='valgrind --leak-check=yes --show-reachable=yes'
-#alias gdb='gdb -silent'
 
 ### global aliases ###
 alias -g G='| grep'
@@ -167,17 +149,7 @@ alias fg=' fg'
 function running() {
     ps aux | grep $1 | grep -v -P "grep.*$1";
 }
-#generate a spectrogram of the specified file
-function spectra() {
-    F=/tmp/spectra.${RANDOM}.png
-    sox "$1" -n spectrogram -o "$F"
-    RC=$?
-    if [ $RC -eq 0 ]; then
-        echo "Spectrogram output to $F"
-        feh $F
-    fi
-    return $RC
-}
+
 function mkcd() {
     if [[ ! -d "$1" ]]; then
         mkdir -p "$1" && cd "$1"
@@ -185,56 +157,9 @@ function mkcd() {
         cd "$1"
     fi
 }
+
 function hist_most() {
     fhist | awk '{print $4}' | sort | uniq -c | sort -rn | head -${1:=10}
-}
-function cl() {
-    cd $1 && ls
-}
-function cpln() {
-    head -n $1 $2 | tail -n 1 | xclip
-}
-function define() {
-    curl dict://dict.org/d:$1
-}
-function hl() {
-    # hilight the given word
-    hlstr=""
-    for arg in $@; do
-        hlstr+="$arg\|"
-    done
-    grep --color=always -i $hlstr
-}
-# start, stop, restart, reload - simple daemon management
-## usage: start <daemon-name>
-## from cinderwick.ca/files/configs/bashrc
-start() {
-    for arg in $*; do
-        sudo /etc/rc.d/$arg start
-    done
-}
-stop() {
-    for arg in $*; do
-        sudo /etc/rc.d/$arg stop
-    done
-}
-restart() {
-    for arg in $*; do
-        sudo /etc/rc.d/$arg restart
-    done
-}
-reload() {
-    for arg in $*; do
-        sudo /etc/rc.d/$arg reload
-    done
-}
-# When directory is changed set xterm title to host:dir
-chpwd() {
-    [[ -t 1 ]] || return
-    case $TERM in
-        sun-cmd) print -Pn "\e]l%~\e\\";;
-        *xterm*|*rxvt*|(dt|k|E)term) print -Pn "\e]2;%m: %~\a";;
-    esac
 }
 
 #######################
@@ -242,11 +167,12 @@ chpwd() {
 #######################
 autoload -U colors && colors
 # allow functions in the prompt
-setopt PROMPT_SUBST
-source ~/.zsh/completion/_invoke
+setopt prompt_subst
+[ -f ~/.zsh/completion/_invoke ] && source ~/.zsh/completion/_invoke
 
-fpath=(/usr/local/etc/bash_completion.d/* $fpath)
-source /usr/local/etc/bash_completion.d/git-prompt.sh
+#fpath=(/usr/share/bash-completion/completions $fpath)
+source ${HOME}/.zsh/functions/git-prompt.sh
+
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUPSTREAM="verbose"
@@ -307,7 +233,7 @@ zle-line-init () {
 }
 zle -N zle-line-init
 
-# man page colours
+# Coloured man pages
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;31m'
 export LESS_TERMCAP_me=$'\E[0m'
@@ -319,26 +245,6 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # Disable CTRL-S pause transmission.
 stty -ixon
 stty -ixoff
-
-# virtualenv
-export WORKON_HOME=$HOME/.virtualenvs
-source $(which virtualenvwrapper.sh)
-
-# virtualenv aliases
-# http://blog.doughellmann.com/2010/01/virtualenvwrapper-tips-and-tricks.html
-alias v='workon'
-alias v.deactivate='deactivate'
-alias v.mk='mkvirtualenv --no-site-packages'
-alias v.mk_withsitepackages='mkvirtualenv'
-alias v.rm='rmvirtualenv'
-alias v.switch='workon'
-alias v.add2virtualenv='add2virtualenv'
-alias v.cdsitepackages='cdsitepackages'
-alias v.cd='cdvirtualenv'
-alias v.lssitepackages='lssitepackages'
-
-[ -f ~/.zsh.secret ] && source ~/.zsh.secret
-[ -f ~/.zsh/fitbit ] && source ~/.zsh/fitbit
 
 export PATH=${HOME}/.cargo/bin:${PATH}
 export PATH=${HOME}/bin:${PATH}
@@ -364,3 +270,6 @@ truecolor() {
       printf "\n";
   }'
 }
+
+# Allow for local zshrc extensions
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
