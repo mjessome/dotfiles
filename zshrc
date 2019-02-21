@@ -276,5 +276,16 @@ truecolor() {
   }'
 }
 
+exists() {
+  type "$1" > /dev/null 2>&1
+}
+
+if exists fd; then
+  export FZF_DEFAULT_COMMAND='fd --type f --no-ignore --hidden --follow -j2 -E ".git" -E "*.pyc" -E ".DS_Store"'
+elif exists rg; then
+  export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --no-messages -j2 --glob "!.git" -g "!**/*.pyc" -g "!.DS_Store"'
+fi
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh || true
+
 # Allow for local zshrc extensions
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local || true
