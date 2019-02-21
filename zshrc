@@ -168,18 +168,23 @@ function hist_most() {
 autoload -U colors && colors
 # allow functions in the prompt
 setopt prompt_subst
-[ -f ~/.zsh/completion/_invoke ] && source ~/.zsh/completion/_invoke
 
 #fpath=(/usr/share/bash-completion/completions $fpath)
-source ${HOME}/.zsh/functions/git-prompt.sh
+source /usr/share/git/git-prompt.sh
 
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
 export GIT_PS1_SHOWUPSTREAM="verbose"
-# colour username blue for zsh, hostname green, vc_info
-# on successful command, green "$", otherwise red "[rc] $"
-PROMPT=$'%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)[%*][%{$fg_bold[yellow]%}%n%{$reset_color%} %~%{$fg_bold[green]%}$(__git_ps1 " (%s)")%{$reset_color%}]
-%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
+PROMPT=''
+PROMPT+=$'%(1j.[%{$fg_bold[blue]%}%j%{$reset_color%}].)' # bg processes
+PROMPT+=$'[%*]' # time
+PROMPT+='['
+PROMPT+=$'%{$fg_bold[yellow]%}%n%{$reset_color%} ' # username
+PROMPT+=$'%~%{$fg_bold[green]%}' # pwd
+PROMPT+=$'$(__git_ps1 " (%s)")%{$reset_color%}' # git status
+PROMPT+=$']\n'
+# on successful command, green "$", otherwise red "[$?] $"
+PROMPT+=$'%(?.%{$fg_bold[green]%}.%{$fg_bold[red]%}[%?] )$%{$reset_color%} '
 
 ###########################
 #       KEYBINDINGS       #
