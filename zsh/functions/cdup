@@ -28,16 +28,13 @@
 # > /var/www/html/example.com
 
 function cdup {
-
-  # TODO: Allow an integer parameter to define the number of levels to jump up; allow it to be used with a named arg
-
   if [[ $# -eq 0 ]]; then
     cd ..
     return 0
   fi
 
   dir="$1"
-  old=`pwd|sed 's/\(.*\)\/\(.*\)/\1/'`
+  old="${PWD}"
   # Try matching the full segment in path name
   new=`perl -pe "s{(.*/\Q$dir\E)(?=/|$).*?$}{\1};" <<< $old`
 
@@ -53,4 +50,18 @@ function cdup {
   fi
 
   cd $new
+  return 0
 }
+
+function _cdup_complete {
+  reply=()
+  cnt=${#${(ps:/:)${PWD}}}
+  if [[ $cnt -lt 2 ]]; then
+    return 0
+  fi
+  for i in {2..$cnt}; do
+    d=$(pwd|cut -d'/' -f$i)
+    reply+=$d
+  done
+}
+compctl -K _cdup_complete cdup
