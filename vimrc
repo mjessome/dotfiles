@@ -6,33 +6,27 @@
 " multi-bytes characters support, for example CJK support:
 "set fileencodings=ucs-bom,utf-8,cp936,big5,euc-jp,euc-kr,gb18030,latin1
 
-
 " Plugins {{{
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-unimpaired'
-Plug 'scrooloose/nerdtree'
-Plug 'embear/vim-localvimrc'
-Plug 'tmhedberg/matchit'
 Plug 'bogado/file-line'
-Plug 'majutsushi/tagbar'
-Plug 'tomtom/tcomment_vim'
-Plug 'rust-lang/rust.vim'
-Plug 'derekwyatt/vim-fswitch'
+Plug 'embear/vim-localvimrc'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'machakann/vim-highlightedyank'
+Plug 'mbbill/undotree'
+Plug 'mileszs/ack.vim', { 'on': 'Ack' }
+Plug 'scrooloose/nerdtree'
+Plug 'tmhedberg/matchit'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'wellle/targets.vim'
 
-" ctrlp
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'mattn/ctrlp-register'
-Plug 'JazzCore/ctrlp-cmatcher', { 'do': './install.sh' }
-
-Plug 'mileszs/ack.vim', { 'on': 'Ack' }
-Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
-
+Plug 'derekwyatt/vim-fswitch'
+Plug 'majutsushi/tagbar'
 Plug 'racer-rust/vim-racer'
+Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
+Plug 'rust-lang/rust.vim'
+Plug 'tpope/vim-fugitive'
 
 " Themes
 Plug 'NLKNguyen/papercolor-theme'
@@ -50,21 +44,15 @@ call plug#end()
 " File Handling {{{
 " ----------------------------------------------------------------------------
 set encoding=utf-8
-" Use a single swap directory
-set directory^=$HOME/.vim/swp/
 
 " Persistent undo dir
-try
-    set undodir=~/.vim/undo
+if has("persistent_undo")
     set undolevels=1000
     set undofile
-endtry
+endif
 
 " Write file as superuser
 cmap w!! %!sudo tee > /dev/null %
-
-" Relaod vimrc when writing to it
-autocmd! bufwritepost vimrc source ~/.vimrc
 
 filetype plugin on
 filetype indent on
@@ -158,34 +146,37 @@ let g:airline_right_sep='◀'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 
-" CtrlP
-let g:ctrlp_working_path_mode = 'rwa'
-set wildignore+=*/tmp/*,*.o,*.so,*.swp,*.zip,*.tar.gz,*.tgz,*.pyc
-let g:ctrlp_map = '<leader>e'
-nnoremap <leader>b :CtrlPBuffer<CR>
-if executable('rg') " Use Ripgrep
-  let g:ctrlp_user_command = 'rg %s -i
-        \ --color never
-        \ --no-heading
-        \ --hidden
-        \ --files
-        \ -j2
-        \ --no-messages
-        \ -g "!**/*.pyc"
-        \ -g "!.git"
-        \ -g "!.svn"
-        \ -g "!.hg"
-        \ -g "!.DS_Store"'
-elseif executable('ag') " Use the Silver Searcher
-  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-        \ --ignore .git
-        \ --ignore .svn
-        \ --ignore .hg
-        \ --ignore .DS_Store
-        \ --ignore "**/*.pyc"
-        \ -g ""'
-endif
-"let g:ctrlp_match_func = { 'match' : 'matcher#cmatch' }
+"" fzf
+nnoremap <leader>ee :FZF<CR>
+nnoremap <leader>eb :Buffers<CR>
+nnoremap <leader>el :BLines<CR>
+nnoremap <leader>eh :History<CR>
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" Enable per-command history.
+" CTRL-N and CTRL-P will be automatically bound to next-history and
+" previous-history instead of down and up. If you don't like the change,
+" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+let g:fzf_layout = { 'down': '~15%' }
 
 " Tagbar
 let Tlist_WinWidth=40
@@ -202,21 +193,24 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " NERDTree
 map <F9> :NERDTreeToggle<CR>
 
+" Undotree
+nnoremap <leader>u :UndotreeToggle<CR>
+
 " Local vimrc loading
 let g:localvimrc_ask=0
 let g:localvimrc_sandbox=0
 
 " Fugitive
 command! Gadd :Git add %
+nnoremap <silent><leader>ga :Gadd<CR>
 nnoremap <silent><leader>gb :Gblame<CR>
 nnoremap <silent><leader>gd :Gdiff<CR>
 nnoremap <silent><leader>gs :Gstatus<CR>
 nnoremap <silent><leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <silent><leader>ga :Gadd<CR>
 
 " Ack
 nnoremap <leader>a :Ack 
-nnoremap <leader>A :tab<CR>:Ack 
+nnoremap <leader>A :tabnew<CR>:Ack 
 if executable('rg') " Use Ripgrep
   let g:ackprg="rg --color never --smart-case --column --no-heading --no-messages -j2"
 elseif executable('ag') "Use the Silver Searcher
@@ -237,8 +231,8 @@ syntax match NoteHL "^.*\[MJ\].*$" containedin=ALL
 " }}}
 
 if exists('+colorcolumn')
-    set colorcolumn=+0
-    highlight ColorColumn ctermbg=234
+  set colorcolumn=+0
+  highlight ColorColumn ctermbg=234
 endif
 
 " Change directory to file's
@@ -321,7 +315,6 @@ set switchbuf=useopen
 " can have unwritten buffers in background
 set hidden
 cmap tbn tabnew 
-cmap <leader>tc tagclose
 " Smart way to move btw. windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -331,6 +324,7 @@ map <C-l> <C-W>l
 
 " Filetype Settings {{{
 " ============================================================================
+"
 
 " Python FileType {{{
 " ----------------------------------------------------------------------------
@@ -339,14 +333,10 @@ au FileType python setlocal shiftwidth=4
 au FileType python setlocal tabstop=4
 au FileType python setlocal number
 
-au FileType python inoremap <buffer> $p print
-au FileType python inoremap <buffer> $i import
-
 " don't put comment leader in column 0 as caused by smartindent
 au FileType python inoremap # X<BS>#
 
 au FileType python setlocal completeopt-=preview
-au FileType python call EnableNoteHilights()
 
 " wscript files are python files
 au BufNewFile,BufRead */wscript set ft=python
@@ -357,7 +347,6 @@ au BufNewFile,BufRead */wscript set ft=python
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F2> :call MakeWithCopen()<CR>
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F3> :cprev<CR>zz
 au FileType c,cpp,cc,C,h,hpp,s,asm map <F4> :cnext<CR>zz
-au FileType c,cpp,cc,C,h,hpp,s,asm call EnableNoteHilights()
 
 fun! ShowFuncName()
   let lnum = line(".")
@@ -391,19 +380,6 @@ endif
 " ----------------------------------------------------------------------------
 au FileType make setlocal noexpandtab
 au FileType make let g:leading_tab_m=0
-" }}}
-
-" Shell Script FileTypes {{{
-" ----------------------------------------------------------------------------
-" }}}
-
-" Lisp-like FileTypes {{{
-" ----------------------------------------------------------------------------
-" }}}
-
-" SQL FileTypes {{{
-" ----------------------------------------------------------------------------
-au BufNewFile,BufRead *.presto set filetype=sql
 " }}}
 
 """ }}}
