@@ -8,12 +8,16 @@
   co = checkout
   com = commit
   commi = commit
-  di=diff -U8
+
   lg = log --stat --decorate
   lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   pul = pull
+
   sdiff = diff --submodule=diff
-  su = submodule update --init --recursive
+  su = submodule update --init --recursive --jobs 4
+
+  fpush = push --force-with-lease
+  upush = "!git push -u origin $(git branch-name)"
 
   # open all merge conflicts in vim
   resolve = "!git status -s | grep '^UU' | awk '{print $2}' | xargs -o vim"
