@@ -49,6 +49,13 @@ set encoding=utf-8
 if has("persistent_undo")
     set undolevels=1000
     set undofile
+    if !has('nvim')
+        set undodir=~/.vim/undo//
+    endif
+endif
+
+if !has('nvim')
+  set directory=~/.vim/swap//
 endif
 
 " Write file as superuser
@@ -73,11 +80,6 @@ set number
 "let mapleader=" "
 map <space> <leader>
 set breakindent         " Wrapped lines will preserve indent
-
-" Mouse to be able to click on a really wide terminal
-if !has('nvim')
-"set ttymouse=urxvt
-endif
 
 " Make tabs and trailing whitespace visible
 set list
