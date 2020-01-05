@@ -350,10 +350,6 @@ au BufNewFile,BufRead */wscript set ft=python
 
 " C/C++ FileTypes {{{
 " ----------------------------------------------------------------------------
-au FileType c,cpp,cc,C,h,hpp,s,asm map <F2> :call MakeWithCopen()<CR>
-au FileType c,cpp,cc,C,h,hpp,s,asm map <F3> :cprev<CR>zz
-au FileType c,cpp,cc,C,h,hpp,s,asm map <F4> :cnext<CR>zz
-
 fun! ShowFuncName()
   let lnum = line(".")
   let col = col(".")
@@ -401,25 +397,6 @@ function! ToggleNumberMode()
     endif
 endfunction
 nnoremap <silent><leader>n :call ToggleNumberMode()<CR>
-
-function! MakeWithCopen()
-    make!
-    let qflist = getqflist()
-    for e in qflist
-        if e.valid
-            if exists('w:build_window')
-                copen
-                cc
-            else
-                tabnew
-                let w:build_window=1
-                copen
-                cc
-            endif
-            break
-        endif
-    endfor
-endfunction
 
 " Insert blank line above or below, remove any possible comment continuations
 nnoremap <leader>iO O<Esc>S<Esc>j
