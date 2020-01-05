@@ -8,7 +8,6 @@
 
 " Plugins {{{
 call plug#begin('~/.config/nvim/plugged')
-Plug 'bling/vim-airline'
 Plug 'bogado/file-line'
 Plug 'embear/vim-localvimrc'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -18,7 +17,6 @@ Plug 'mbbill/undotree'
 Plug 'mileszs/ack.vim', { 'on': 'Ack' }
 Plug 'scrooloose/nerdtree'
 Plug 'tmhedberg/matchit'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'wellle/targets.vim'
 
 Plug 'derekwyatt/vim-fswitch'
@@ -116,6 +114,31 @@ endif
 
 " }}}
 
+" Status Line {{{
+" ----------------------------------------------------------------------------
+function! GitStatus()
+  let l:branch = fugitive#head(8)
+  if strlen(l:branch) == 0
+    return ''
+  endif
+  return ' Git:'.l:branch.' '
+endfunction
+
+set statusline=
+set statusline+=%#Visual#
+set statusline+=\ %-3.3n\            " Buffer number
+set statusline+=%<%f\                " Filename
+set statusline+=%#WarningMsg#%r%*    " Read-only
+set statusline+=%#WildMenu#%h%w%m%*  " File status flags
+set statusline+=%#Question#
+set statusline+=%{GitStatus()}  " Git
+set statusline+=%*
+set statusline+=%=                   " Right side
+set statusline+=%#Visual#
+set statusline+=%y\                  " FileType
+set statusline+=%-16.((%l/%L,\ %c%V)%)\ %P
+" }}}
+
 " Plugin Settings {{{
 " ----------------------------------------------------------------------------
 " clang_complete
@@ -139,12 +162,6 @@ let g:racer_experimental_completer = 1
 
 " Highlighted Yank
 let g:highlightedyank_highlight_duration = 300
-
-" Airline
-let g:airline_left_sep='▶'
-let g:airline_right_sep='◀'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
 
 "" fzf
 nnoremap <leader>ee :FZF<CR>
