@@ -36,6 +36,8 @@ Plug 'jacoborus/tender'
 Plug 'fcpg/vim-fahrenheit'
 Plug 'muellan/am-colors'
 Plug 'KeitaNakamura/neodark.vim'
+Plug 'nanotech/jellybeans.vim'
+Plug 'smallwat3r/vim-efficient'
 call plug#end()
 " }}}
 
@@ -96,7 +98,7 @@ endif
 
 " Colour Scheme Settings
 set background=dark
-colorscheme gruvbox
+colorscheme jellybeans
 
 set showmatch     " briefly jump to matching bracket upon bracket insert
 set matchtime=1   " How many 10ths of a second to show the match for
