@@ -21,8 +21,8 @@ Plug 'wellle/targets.vim'
 
 Plug 'derekwyatt/vim-fswitch'
 Plug 'majutsushi/tagbar'
-Plug 'racer-rust/vim-racer'
-Plug 'Rip-Rip/clang_complete', { 'for': ['c', 'cpp'], 'do': 'make install' }
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+Plug 'm-pilia/vim-ccls'
 Plug 'rust-lang/rust.vim'
 Plug 'tpope/vim-fugitive'
 
@@ -143,25 +143,6 @@ set statusline+=%-16.((%l/%L,\ %c%V)%)\ %P
 
 " Plugin Settings {{{
 " ----------------------------------------------------------------------------
-" clang_complete
-"let g:clang_library_path='/usr/lib/llvm-3.4/lib'
-let s:clang_library_path='/Library/Developer/CommandLineTools/usr/lib'
-if isdirectory(s:clang_library_path)
-    let g:clang_library_path=s:clang_library_path
-endif
-let g:clang_snippets=1
-let g:clang_close_preview=1
-let g:clang_complete_auto=1
-let g:clang_use_library=1
-let g:clang_auto_user_options='compile_commands.json'
-set completeopt+=longest
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-inoremap <expr> <C-x><C-i> "\<C-x>\<C-u>"
-
-" vim-racer
-let g:racer_cmd = "/Users/marc.jessome/.cargo/bin/racer"
-let g:racer_experimental_completer = 1
-
 " Highlighted Yank
 let g:highlightedyank_highlight_duration = 300
 
@@ -456,6 +437,47 @@ if has("cscope")
   command! -nargs=+ Cd :cscope find d <args>
   command! -nargs=+ Ci :cscope find i <args>
 endif
+" }}}
+
+" Coc.nvim {{{
+
+set shortmess+=c
+set updatetime=300
+
+nmap <silent><leader>ld <Plug>(coc-definition)
+nmap <silent><leader>lD <Plug>(coc-declaration)
+nmap <silent><leader>lr <Plug>(coc-references)
+
+nnoremap <silent><leader>lk :call CocActionAsync('doHover')<cr>
+
+" List and search
+nnoremap <silent><leader>ll :CocList<cr>
+nnoremap <silent><leader>ls :CocList outline<cr>
+nnoremap <silent><leader>lw :CocList -I symbols<cr>
+nnoremap <leader>la :CocSearch 
+
+" Folding
+nnoremap <leader>lz :call CocActionAsync('fold')<cr>
+
+" Rename
+nmap <leader>ln <Plug>(coc-rename)
+nmap <leader>lm <Plug>(coc-refactor)
+
+" Tab/S-Tab to move through completions
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" <cr> to confirm completion
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Tab/S-Tab to move through snippet positions
+let g:coc_snippet_next = "<Tab>"
+let g:coc_snippet_prev = "<S-Tab>"
+
+" Ccls.vim
+let g:ccls_close_on_jump = v:true
+nnoremap <leader>lc :CclsCallHierarchy<CR>
+
 " }}}
 
 " vim:foldmethod=marker
