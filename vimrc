@@ -221,13 +221,17 @@ endif
 
 syntax on               " Turn on syntax highlighting
 
-" Custom syntax highlighting support
-highlight CustomSyntax ctermfg=144
-
-" Note Highlight {{{
+" Custom Syntax Highlighting {{{
 " ----------------------------------------------------------------------------
-highlight NoteHL guibg=darkred guifg=white ctermbg=52 ctermfg=white
-syntax match NoteHL "^.*\[MJ\].*$" containedin=ALL
+function s:CustomHighlights()
+  syntax match NoteHL "^.*\[MJ\].*$" containedin=ALL
+  highlight NoteHL guibg=darkred guifg=white
+endfunction
+
+augroup custom_syntax
+  autocmd!
+  autocmd Syntax * call s:CustomHighlights()
+augroup end
 " }}}
 
 if exists('+colorcolumn')
