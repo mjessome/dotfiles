@@ -22,6 +22,14 @@
   # open all merge conflicts in vim
   resolve = "!git status -s | grep '^UU' | awk '{print $2}' | xargs -o vim"
 
+  # list recently checked-out branches
+  recent = "!r() { cur=$(git rev-parse --abbrev-ref HEAD); git for-each-ref --sort=-committerdate refs/heads/ --format='%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)%(color:reset)' | awk '{printf \"%2d: %s\\n\", NR, $0}'| column -ts'|' | head -n 30; }; r"
+
+  # check out a recent branch by number
+  recent-checkout = "!r() { BRANCH_NUM=\"$1\"; cur=$(git rev-parse --abbrev-ref HEAD); BRANCH_NAME=`git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short)' | sed -n \"${BRANCH_NUM}{p;q;}\"`; git checkout $BRANCH_NAME; }; if [ $# -lt 1 ]; then echo \"Missing branch index\"; exit 2; fi; r"
+
+  rco = recent-checkout
+
 [apply]
   whitespace = strip
 
