@@ -3,7 +3,7 @@
   email = marc.jessome@gmail.com
 
 [alias]
-  amend = commit --amend
+  amend = commit --amend --reset-author
   bra = branch -a
   co = checkout
   com = commit
