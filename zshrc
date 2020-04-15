@@ -145,6 +145,8 @@ alias fg=' fg'
 #########################
 #       FUNCTIONS       #
 #########################
+source ~/.zsh/functions/cdup
+
 # list all process matching the arg, exclude the grep cmd
 function running() {
     ps aux | grep $1 | grep -v -P "grep.*$1";

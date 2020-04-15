@@ -65,3 +65,17 @@ function _cdup_complete {
   done
 }
 compctl -K _cdup_complete cdup
+
+function cdgit {
+	root=$(git rev-parse --show-superproject-working-tree 2>/dev/null)
+	if [[ -z "$root" ]]; then
+		root=$(git rev-parse --show-toplevel 2>/dev/null)
+	fi
+	if [[ -z "$root" ]]; then
+		echo "Not in a git directory" 1>&2
+		return 1
+	fi
+
+	cd $root
+	return 0
+}
