@@ -1,7 +1,3 @@
-[user]
-  name = Marc Jessome
-  email = marc.jessome@gmail.com
-
 [alias]
   amend = commit --amend --reset-author
   bra = branch -a
@@ -9,6 +5,7 @@
   com = commit
   commi = commit
 
+  lo = log --pretty=format:"%h%x09%an%x09%ad%x09%s"
   lg = log --stat --decorate
   lgg = log --graph --decorate --pretty=format:'%C(bold red)%h%Creset -%C(cyan)%d%Creset %s %C(cyan)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
   pul = pull
@@ -16,28 +13,57 @@
   sdiff = diff --submodule=diff
   su = submodule update --init --recursive --jobs 4
 
+  f = fetch --prune --tags
+
   fpush = push --force-with-lease
   upush = "!git push -u origin $(git branch-name)"
 
+  rom = rebase --autostash origin/master
+  rcont = rebase --continue
+
   # open all merge conflicts in vim
-  resolve = "!git status -s | grep '^UU' | awk '{print $2}' | xargs -o vim"
+  resolve = "!git status -s | grep '^UU' | cut -d ' '  -f2- | xargs -o -I {} ${EDITOR} \"{}\""
 
   # list recently checked-out branches
   recent = "!r() { cur=$(git rev-parse --abbrev-ref HEAD); git for-each-ref --sort=-committerdate refs/heads/ --format='%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)%(color:reset)' | awk '{printf \"%2d: %s\\n\", NR, $0}'| column -ts'|' | head -n 30; }; r"
 
   # check out a recent branch by number
   recent-checkout = "!r() { BRANCH_NUM=\"$1\"; cur=$(git rev-parse --abbrev-ref HEAD); BRANCH_NAME=`git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short)' | sed -n \"${BRANCH_NUM}{p;q;}\"`; git checkout $BRANCH_NAME; }; if [ $# -lt 1 ]; then echo \"Missing branch index\"; exit 2; fi; r"
-
   rco = recent-checkout
+
+  staged = diff --staged
+
+  # From https://stackoverflow.com/a/30998048
+  find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+  show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 
 [apply]
   whitespace = strip
 
 [core]
   editor = vim
+  pager = less -MR
 
 [diff]
   renames = true
+  algorithm = histogram
+
+[rebase]
+  autoStash = true
+  auoSquash = true
+
+[init]
+  defaultBranch = main
 
 [push]
   default = simple
+
+[fetch]
+  parallel = 4
+
+[blame]
+  #ignoreRevsFile = .git-blame-ignore-revs
+  # Mark lines that can't be blamed with '*'
+  markUnblamableLines = true
+  # Mark lines that have a skipped commit with '?'
+  markIgnoredLines = true
