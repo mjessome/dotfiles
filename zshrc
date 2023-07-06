@@ -1,6 +1,6 @@
 [ -z "$PROMPT" ] && return
 
-export EDITOR='vim'
+export EDITOR='nvim'
 
 unsetopt beep # turn of system beep
 
@@ -67,6 +67,10 @@ setopt hist_reduce_blanks
 #######################
 #       ALIASES       #
 #######################
+alias vim_='vim'
+alias vim='nvim'
+alias nv='nvim'
+
 ### sudo ###
 alias halt='sudo halt'
 alias reboot='sudo reboot'
